@@ -1,0 +1,831 @@
+Table of Contents
+[topics content@scaler.com](https://hackmd.io/@topics)
+
+Programming Foundations & AI Awareness
+
+Hey Everyone, welcome to your first session at Scaler! I hope that you have a great time learning and interacting here.
+I want to know about everyone here, so please send 2 lines about yourself in chat!
+
+Alright, to begin with let me start with my Introduction.
+Note to Instructor: Introduce Yourself.
+
+Session Agenda
+- Common terms throughout the modules
+- Discussion about Beginner module
+- AI in your coding journey — a quick honest chat
+- Interesting things about computer
+- Basic codes in JAVA
+- Quizzes
+- Dashboard walkthrough
+
+---
+
+title: Common Terms throughout the course
+description:
+duration: 400
+card_type: cue_card
+
+Few Terms that you shall see/hear throughout the course:
+
+Note to Instructor: Please take a screenshot of below content and keep it pasted on your Ipad.
+
+PSP (Problem Solving Percentage) - Solved Assignment Problems / Total Open Assignment Problems
+After every class you'll get problems to solve. There will be two types of section - Assignment and Additional. Assignment section consists of implementation of the problems done in class.
+Additional Problems are slight modifications of assignment problem.
+PSP is calculated based on Assignment Problems since we would want you to work atleast on your concepts, but even though additional problems are not part of PSP, once you're done with assignment, we highly recommend to complete additional problems as well since they challenge you to become better.
+Try to keep PSP least 85% no matter what. Remember that to be able to grasp concepts better, you are expected to solve problems regularly.
+
+Attendance
+Try to maintain at-least 75% attendance either through live classes or by watching recording, though I will recommend you to come to classes regularly because otherwise it may create backlogs.
+So, I expect all of you to attend live classes and if for any reason you are unable to, then please send me a message stating the reason.
+
+Contests:
+Every module shall have contests.
+Each will be for 1.5 hours and will be conducted within class timings immediately followed by Contest Discussion (Instructor shall be discussing contest problems).
+You are expected to score >=60% in contests. If for any reason you are unable to do so, then we shall also be having re-attempts.
+It is recommended to participate in live contest since discussion happens for it but for re-attempt, it doesn't happen. Hence, it is important to give live to be able to understand mistakes.
+Rely on re-attempts in worst scenarios. Though, best of any attempt shall be considered.
+
+People who regularly solve problems and participate in contests are more likely to do better in real Interviews.
+Be consistent in solving problems. If stuck, please post the issue in your WA/Slack group and let's make it a habit of helping each other as it will eventually help you to be better.
+
+I shall be looking at your performances very closely and if I see a dip, I'll be reaching out to you to understand the issues.
+Though I would encourage you to reach out (either via slack/WA DM) if there's anything troubling you so that we can sort it out together and let not that dip happen!
+
+---
+
+title: Beginner Module Description
+description: Todays Content
+duration: 600
+card_type: cue_card
+
+NOTE TO INSTRUCTOR: Launch to poll to get understanding of your batch:
+
+#Poll Poll 1
+What coding experience do you have already? 
+1. I know coding but not in JAVA. 
+2. I know coding and JAVA but want to revise. 
+3. I am entirely new to coding.
+
+Explain that since most of the learners are entirely new to coding, the pace of the class will be according to those who are entirely new. And we will be learning everything from the very basics.
+
+Note to Instructor: Please keep the below content pre-written on your IPad.
+
+Beginner: Programming Foundations & AI Awareness
+Beginner: Operators & Expression Evaluation using AI
+Beginner: Data Types 1
+Beginner: Data Types 2 + Reading Inputs
+Beginner: Operators
+Beginner : If-Else & AI Edge Case Thinking
+Beginner: Lab Session on If-Else
+Beginner: Loops & Iteration Analysis by AI
+Beginner: Lab Session on Loop
+Beginner: More problems on Loops & Patterns
+Beginner: Lab Session on Patterns
+Beginner Contest 1: Data Types, If-Else & Loops
+Beginner: Functions & Modularity: Designing Code with AI
+Beginner: Lab Session on Functions
+Beginner: Introduction to Strings
+Beginner: 1D Array
+Beginner: Lab Session on 1D Array - 1
+Beginner: Lab Session on 1D Array - 2
+Beginner: 2D Array - 1
+Beginner: Lab Session on 2D Arrays - 1
+Beginner: Lab Session on 2D Arrays - 2
+Beginner: Strings in Memory: Visualizing with AI
+Beginner: Maths Basics & Calculate Iterations
+Beginner: Revision: Language
+Beginner Contest 2: Functions & Arrays & Contest discussion
+
+Expectation Note:
+Set the expectations that we are here to learn basics of programming using JAVA not java for software development.
+JAVA is just a medium which we are using to learn programming constructs.
+If you are comfortable with above mentioned topics and you just need to quickly revise concepts - the appropriate batch for you is: Intermediate Refresher Batch [available in either JAVA or PYTHON]
+Note : For more details, write a mail to support@scaler.com
+
+---
+
+title: FAQs
+description: Todays Content
+duration: 600
+card_type: cue_card
+
+Notes will be uploaded after the class.
+Assignments will be unlocked after the class ends.
+There is no deadline for assignments.
+
+Humble Request: Please do not discuss a topic which is not yet discussed in public chat. Please let's not create panic to others.
+
+Protip : Ask them to choose instructor's name in the chat when answering a question
+To : Everyone
+To : Instructor name
+
+But If asking a question, ask in public chat.
+
+Session Flow
+For Evening Batch
+9:05pm [start] Break [5 or 10 min] 11:30pm Doubt session
+
+For Morning Batch
+7:05am [start] Break [5 or 10 min] 9:30am Doubt session
+
+Attendance is optional during doubt session.
+
+Let's Begin with the Content!
+
+---
+
+title: Is Computer Dumb?
+description: animated step-by-step demonstration
+duration: 900
+card_type: cue_card
+
+Scenario
+We ask our sibling and computer to play Bol Bachhan movie.
+
+🔗 Copy this link and open it in a new tab. Show it to your learners for better visualization:
+https://scaler-mk.github.io/algo-visualizer/01_computer_is_dumb.html
+
+It auto-plays a side-by-side comparison: the sibling figures it out in one line; the computer needs 9 explicit steps. The "every. single. step." stamp at the end is the laugh line.
+
+Sibling
+- Can play a movie
+- Does not need any instructions
+
+Computer
+- Needs step by step instructions in detailed manner
+- Hence, computer is dumb.
+- Instructions for computer needs to be absolutely clear!
+
+Tie-back to AI section: "Remember what we said about AI not understanding what you actually want to build? Same idea. Computers — even AI — need precise instructions. That's what coding teaches you to give."
+
+---
+
+title: Need of programming languages
+description:
+duration: 1200
+card_type: cue_card
+
+Scenario: The coder is trying to communicate with the computer.
+
+Note to Instructor: Open the animation in a new tab and share screen.
+🔗 Copy this link and open it in a new tab. Show it to the learners for better visualization:
+https://scaler-mk.github.io/algo-visualizer/02_compiler_flow.html
+
+The animation walks through the journey: You → Java code → Compiler → Binary → Computer. Each stage lights up in sequence with a caption explaining it. Use the Replay button if you want to walk through it twice.
+
+Ask the learners what all languages do they know. There will be several responses like Hindi, English, Telugu, Tamil, Marathi, Punjabi, Kannada, etc.
+
+Can computer understand these language? NO!
+which one it understands? => 0s and 1s.
+Such a language is known as Binary.
+
+Since, we cannot learn to write instructions in binary language. We have learned programming languages like JAVA, C++, C#, Python, etc.
+
+Now, we need a translator to translate our instructions. So, computer can understand the instructions.
+Compiler helps us convert the code into machine understandable language.
+
+Draw this to elaborate:
+You (Java Code) ──► Compiler (Translator) ──► Computer (Binary 0s and 1s)
+
+---
+
+title: Importance of Syntax
+description:
+duration: 600
+card_type: cue_card
+
+Section 1.5 (IDE)
+Integrated Development Environment :
+IDE - tool for developers for software editing, building, testing, and packaging in an easy-to-use application,
+
+Since, we will not be doing these complicated things right now. We do not need any software installation required
+We will be using online ide throughout this module. Interviewbit's online ide - ide.new
+https://www.interviewbit.com/online-cpp-compiler
+
+Ask the learners to sign in on Interviewbit's platform and then Give a walkthrough of the platform.
+
+Importance of Syntax
+I love to cook.
+Ask learners whether they can understand the meaning of this sentence.
+
+I garden know don't.
+Ask learners the same thing. The answer will be no this time. We can ask for the reason.
+The reason being the grammar is wrong.
+Grammar : Rules of writing English.
+Every language has its own set of rules to be followed.
+
+Similarly, Rules of writing code : Syntax
+Now, let us learn some rules and start writing our very first code.
+
+---
+
+title: Writing basic codes — Syntax Rules in Action
+description: Explaining the syntax with an interactive demo
+duration: 30
+card_type: cue_card
+
+Note to Instructor: Open the syntax animation in a new tab and share screen.
+🔗 Copy this link and open it in a new tab. Show it to your learners for better visualization:
+https://scaler-mk.github.io/algo-visualizer/03_syntax_rules.html
+
+This is an interactive animation. It has tabs for each rule (semicolon, case-sensitivity, quotes, brackets). Click a tab, then click ▶ Run — it shows the broken code, the compiler error, the fix being applied, and the success output. Use it as you walk through each of the rules below.
+
+Basic codes
+The code which is already written, we can just ignore all those words. We will be learning about them in the upcoming sessions.
+
+To get output in JAVA, we use:
+System.out.print(100)
+
+Explain them we will not be learning about what system is in the beginner module.
+Run the incorrect code and Show them the error first
+
+Output:
+[CompilationError] Your code was terminated due to compilation error 
+Main.java:4: error: ';' expected 
+System.out.print(100) 
+                     ^ 
+1 error
+
+Rule 1 : Every statement should end with a semi-colon(;)
+
+Correct the code and then run again.
+System.out.print(100);
+
+Output:
+100
+
+Ask them if this rule is clear.
+
+Let us try one more time.
+system.out.print(5000);
+
+Output:
+[CompilationError] Your code was terminated due to compilation error 
+Main.java:4: error: package system does not exist 
+system.out.print(5000); 
+^ 
+1 error
+
+Explain the error that something is wrong with system and ask them to find the difference between the two statements.
+The only difference is that S is lowercase here.
+
+Rule 2 : JAVA is Case Sensitive.
+
+System.out.print(5000);
+
+Output:
+5000
+
+Let us have some quizzes to understand both the rules.
+
+---
+
+title: Quiz 1
+description: Quiz 1
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.print(10 + 20)
+
+Choices
+30
+10+20
+Error
+
+---
+
+title: Quiz 2
+description: Quiz 2
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+System.Out.print(10 + 20);
+
+Choices
+30
+10+20
+Error
+
+---
+
+title: Quiz 3
+description: Quiz 3
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.print(10+20);
+
+Choices
+30
+10+20
+Error
+
+---
+
+title: Quiz 4
+description: Quiz 4
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.print(10*20);
+
+Choices
+Error
+200
+1020
+Inki Pinki Ponki
+
+---
+
+title: Quiz 5
+description: Quiz 5
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.print(5-10);
+
+Choices
+5
+15
+-5
+Error
+
+---
+
+title: Printing text in Output
+description: How to print text
+duration: 2000
+card_type: cue_card
+
+Printing text in Output
+System.out.print(Priyanshi);
+
+Run and show that this gives error.
+
+Rule 3 : In order to print text we use double quotes (" ")
+
+Few more quizzes. Launch the quizzes one by one and remind them to check whether all rules are being followed or not.
+
+---
+
+title: Quiz 6
+description: Quiz 6
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.print("Priyanshi);
+
+Choices
+Priyanshi
+Error
+
+---
+
+title: Quiz 7
+description: Quiz 7
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.print("10 + 20");
+
+Choices
+10 + 20
+30
+Error
+
+Explanation : Anything that is written inside double quotes (" ") will be printed as it is in the output.
+
+---
+
+title: Quiz 8
+description: Quiz 8
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.prinT("10/20 world is ");
+
+Choices
+10/20 world is
+Error
+
+---
+
+title: Quiz 8 Explanation
+description:
+duration: 30
+card_type: cue_card
+
+Explanation : T should be lowercase.
+
+---
+
+title: Brackets
+description:
+duration: 300
+card_type: cue_card
+
+Show by removing one bracket from the code, that this gives error.
+class Main { 
+    public static void main(String args[]) { 
+        // Your code goes here 
+    }
+
+Output:
+[CompilationError] Your code was terminated due to compilation error 
+Main.java:error: reached end of file while parsing 
+} 
+ ^ 
+1 error
+
+Rule 4 : () , {}, " " → These All Should Be in Pairs
+
+Note to Instructor: Use the Rule 4: Brackets pair tab in animations/03_syntax_rules.html for a quick visual reinforcement.
+
+---
+
+title: Comments
+description:
+duration: 300
+card_type: cue_card
+
+Now, let's talk about comments. Show why some of the statements are not giving any output and ask them to find the differences.
+
+Comments -> Statements which we want our compiler to ignore. 
+Comments are of two types :
+1. Single Line Comments : To write a single line comment just add two forward slashes (//) in front of the statement.
+// System.out.print("HI"); // This is a single line comment.
+
+2. Multi Line Comments : In order to comment out multiple lines together, we add /* at the beginning and then */ to close the comment.
+/* System.out.print("Hello"); This is a multi line comment. */
+
+---
+
+title: [ENHANCED] print vs println
+description: With side-by-side cursor animation
+duration: 300
+card_type: cue_card
+
+Let's try to print something like this:
+Hello Guys!!
+Welcome to Scaler!
+
+System.out.print("Hello Guys!!"); 
+System.out.print("Welcome to Scaler!");
+
+Output:
+Hello Guys!!Welcome to Scaler!
+
+This is not giving us the correct output.
+
+Introduce : System.out.println();
+System.out.println("Hello Guys!!"); 
+System.out.println("Welcome to Scaler!");
+
+Output:
+Hello Guys!! 
+Welcome to Scaler!
+
+Note to Instructor: Now open the animation
+🔗 Copy this link and open it in a new tab. Show it to your learners for better visualization:
+https://scaler-mk.github.io/algo-visualizer/04_print_vs_println.html
+
+The two sides type out their output letter-by-letter in real time, so learners actually see the cursor staying on the same line for print vs jumping to the next line for println. Hit the Run both button to replay.
+
+Rule 5
+print -> Just type the output
+println -> Type the output and press Enter [cursor goes to next line]
+
+Some more quizzes to check their understanding.
+
+---
+
+title: Quiz 9
+description: Quiz 9
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.print(10); 
+System.out.print(20);
+
+Choices
+1020
+10
+20
+Error
+
+Explanation : Since, we are using print it will just type the output.
+
+---
+
+title: Quiz 10
+description: Quiz 10
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.print("Scaler"); 
+System.out.print("Academy");
+
+Choices
+ScalerAcademy
+Scaler Academy
+Academy
+Error
+
+---
+
+title: Quiz 11
+description: Quiz 11
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+// System.out.println("Super"); 
+System.out.println("Excited");
+
+Choices
+SuperExcited
+Super
+Error
+Excited
+
+---
+
+title: Quiz 12
+description: Quiz 12
+duration: 30
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.println("Hey There");
+
+Choices
+Hey there
+hey There
+Hey There
+Error
+
+---
+
+title: Quiz 13
+description: Quiz 13
+duration: 60
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.print("A"); 
+System.out.println("B"); 
+System.out.println("C");
+
+Choices
+AB
+C
+A
+B
+C
+ABC
+All are correct! Obviously!
+
+---
+
+title: Quiz 14
+description: Quiz 14
+duration: 60
+card_type: quiz_card
+
+Question
+What will be the output?
+System.out.print("A"); 
+System.out.println("B"); 
+System.out.println("C"); 
+System.out.print("D");
+
+Choices
+AB
+C
+D
+ABCD
+A
+B
+CD
+None of them
+
+---
+
+title: The AI Question Lets Talk About It
+description: Addressing the elephant in the room before we write our first line of code
+duration: 120
+card_type: cue_card
+
+The Elephant in the Room
+
+Note to Instructor: This is a NEW section. Keep it conversational. Ask first, lecture second.
+
+Before we touch a single line of code, let's talk about something on every learner's mind right now: AI.
+
+You've probably heard things like:
+- "AI is writing all the code now — why should I learn?"
+- "By the time I finish this course, will developer jobs even exist?"
+- "Is this whole thing a waste of time?"
+
+These are fair questions. Let's deal with them honestly, together, and we'll know exactly why you're here, and we can move on with full confidence.
+
+Ask the class: "Quick show of hands in chat — has anyone here used ChatGPT, Gemini, Claude, or GitHub Copilot in the last month? Type 'yes' or 'no'."
+
+Almost everyone will say yes. Acknowledge that. Then say: "Good. So we're not pretending AI doesn't exist. We're going to figure out how it fits into your journey — and why your decision to learn coding right now is actually the smartest thing you could be doing."
+
+---
+
+title: History Repeats The Pattern of Every "Scary" Tool
+description: Calculators, Excel, Google, and now AI
+duration: 180
+card_type: cue_card
+
+History Repeats Itself
+
+Every time a powerful new tool arrives, people panic. And every time, the same thing happens — the tool raises the floor, and skilled workers become more valuable, not less.
+
+Walk through the diagram aloud with the class:
+- Calculator (1970s): People thought accountants were done for. Reality? Accountants stopped doing tedious arithmetic and started doing analysis — and got paid more for it.
+- Excel (1990s): "Bookkeepers are finished!" Instead, anyone who could use Excel became a business analyst. The job evolved.
+- Google (2000s): "Why hire researchers when anyone can search?" Researchers became 10× faster — and the value shifted from finding information to judging which information is right.
+- AI (today): Same story, new chapter. AI is the latest tool. It's not replacing developers — it's separating the ones who learn it from the ones who don't.
+
+Key line to land with confidence:
+"AI doesn't replace developers. It replaces developers who refuse to learn it."
+
+---
+
+title: What AI Is Actually Good At (and Where It Fails)
+description:
+duration: 240
+card_type: cue_card
+
+Let's Be Honest About AI
+
+AI is genuinely powerful at some things — and genuinely terrible at others. The skill is knowing the difference.
+
+🤖 Where AI is genuinely strong today
+- Writing working code fast — from simple functions to entire small features, AI can produce code that runs.
+- Explaining things to you — "What does this line do?", "Why am I getting this error?", "Explain this concept like I'm 10." It's like having a patient tutor available 24/7.
+- Generating first drafts of almost anything — code, test cases, documentation, even rough designs for a small app.
+- Translating between languages — give it Python, get Java. Give it an idea in English, get code.
+- Speeding up repetitive work — the boring, predictable stuff that used to eat hours.
+
+Be honest with the class: "Yes — AI can write more than just boilerplate. It can build real things. That's exactly why the next part matters so much."
+
+🧠 Where AI still fails — and this is YOUR territory
+- Understanding what to actually build — AI gives you what you asked for, not what you needed. If your instruction is vague or wrong, the output will be confidently wrong.
+- Subtle bugs that look correct — code that runs, looks clean, and quietly gives the wrong answer in one specific case. (We'll see a live example in a few minutes.)
+- Knowing when its own answer is wrong — AI doesn't "know" it made a mistake. It will explain a wrong answer with the same confidence as a right one.
+- Connecting the dots across a real system — in a real project there are dozens of files, rules, and decisions. AI sees only what you paste in. It can't see the full picture you're working inside.
+- Accountability — when something breaks at 2 AM in production, your manager calls you, not the AI. The person who clicked "accept" owns the code.
+
+Reframe to share with learners:
+"AI is no longer just a typing assistant — it's a powerful collaborator. But a collaborator still needs someone in charge who knows what 'right' looks like. That someone is you. Companies aren't hiring 'people who can't code.' They're hiring people who can code AND use AI well. Developer + AI > AI alone > Developer alone."
+
+---
+
+title: Why Fundamentals Matter MORE Now, Not Less'
+description: The most important slide in this entire section
+duration: 240
+card_type: cue_card
+
+AI has changed how we write code, but it hasn't changed how software works.
+
+Today, anyone can generate code using AI. The real differentiator is no longer typing syntax quickly — it's knowing what to build, why it works, and whether the generated solution is actually correct.
+
+Imagine asking AI: "Solve this problem."
+It may generate code in seconds.
+But how do you know:
+- Is the algorithm correct?
+- Is it optimal?
+- Will it pass edge cases?
+- Can it handle millions of users?
+- Why did it choose this approach over another?
+
+Without fundamentals, you're forced to trust the AI blindly.
+With DSA knowledge, you can verify, improve, and confidently use AI as a productivity tool instead of treating it as a black box.
+
+That's exactly what programming fundamentals and DSA teach.
+
+---
+
+title: How We''ll Use AI in This Course
+description: Setting healthy norms early
+duration: 60
+card_type: cue_card
+
+So… should YOU use AI while learning?
+Short answer: Yes, but as a tutor, not as a code-writer.
+
+✅ Healthy use
+- "Explain why this line gave me an error."
+- "What's the difference between print and println?"
+- "I've tried for 30 minutes — here's my code, can you give me a hint?"
+
+❌ Not healthy (in the learning phase)
+- "Solve this assignment for me." → You won't learn, and you'll fail interviews.
+- "Generate the answer without me thinking." → You're cheating your future self.
+
+The rule we'll follow this whole course:
+First, you struggle. Then you ask peers. Then you ask AI for hints. Then — only then — for the full answer. The struggle is where learning happens. AI shortcuts the struggle and steals the learning.
+
+Now — let's go become the kind of developer that AI works for, not against.
+
+---
+
+title: AI Coding & AI Probing - Platform Feature Introduction
+description:
+duration: 400
+card_type: cue_card
+
+🤖 Instructor Note: Introduce AI Coding & AI Probing
+Instructor: Take a few minutes at an appropriate point in the session to introduce students to two AI-powered features now available on the platform — AI Coding and AI Probing. Keep this brief and awareness-focused; the goal is for students to know these exist, understand what they're for, and feel encouraged to use them.
+
+What is AI Coding?
+AI Coding is a feature where the platform provides learners with a code snippet or a problem statement to work with, and the learner engages directly with the AI around it — explaining, debugging, optimizing, or implementing as required. It is split into four modes:
+- Explain the Code — Learners are given a piece of code and need to explain it to the AI - covering what the code does, how it works, and the logic behind it.
+- Debug the Code — Learners are given a piece of code containing a bug and work through it with the AI to identify and fix the issue.
+- Optimize the Code — Learners are given a piece of working code and discuss it with the AI to improve it further (better time/space complexity), explaining their reasoning.
+- Implement the Code — Learners are given a problem statement and write the solution from scratch on their own, then walk the AI through their approach.
+
+Why AI Coding matters for students:
+Explaining, debugging, optimizing, and implementing code covers the full range of what's expected in real-world coding work — not just writing code from scratch, but also reading, fixing, and improving code written by someone else. This builds a much deeper, more practical understanding of concepts than passive learning. It's also exactly what's tested in technical interviews — being handed unfamiliar code and asked to explain, fix, or improve it on the spot, alongside writing fresh solutions. Practicing this regularly helps students build a well-rounded skill set, so they walk into interviews and real-world coding tasks more prepared and confident.
+
+What is AI Probing?
+AI Probing is a feature where, after a learner submits a solution, the AI asks short follow-up questions about their own code — for example, asking them to explain a specific line, walk through the logic, or justify a choice made in their approach.
+
+Why AI Probing matters for students:
+- It verifies that the learner genuinely understands the solution they've submitted, rather than having copy-pasted it from an external source.
+- If a learner struggles to answer basic questions about their own submitted code, it's a useful signal — both to the learner and to us — that the concept needs more practice.
+- It reinforces the habit of understanding code deeply before submitting it, rather than treating submission as the finish line.
+
+Instructor tip: Frame this as a helpful checkpoint, not a "gotcha." Encourage students to treat AI Probing as a way to self-verify their understanding, similar to explaining a concept out loud to check if it truly makes sense.
+
+In summary: AI Coding helps learners build hands-on fluency with reading, fixing, improving, and writing code, while AI Probing ensures that understanding stays genuine and not superficial. Together, these tools are designed to make learners better prepared — for assessments, interviews, and real engineering work.
+
+Instructor: If students have further questions about either feature, direct them to Support or the relevant FAQ document.
+Please make sure students are aware of both features before moving on.
+
+---
+
+title: DashBoard Walkthrough
+description:
+duration: 300
+card_type: cue_card
+
+Section 1.6 (Dashboard Walkthrough)
+Please play this video in class and ask for any doubts if they have:
+https://www.loom.com/share/d853cd739c8244499b817ffd9f02c736?sid=afaaa5db-42dd-4f22-bae6-fdd0f4b73169
+
+---
+
+title: Summary
+description:
+duration: 600
+card_type: cue_card
+
+Section 1.7 (Summary)
+
+end statements with a semicolon ( ; )
+JAVA is case sensitive. -> System, system are considered different
+In order to print text, we use double quotes ( " " )
+{}, (), " " –> All of these are in pairs.
+Comments → Single-line comments start with two forward slashes ( // ). Any text between // and the end of the line is ignored by Java (will not be executed).
+Multi-line comments start with /* and ends with */. Any text between /* and */ will be ignored by Java.
+System.out.print(); → Just type the output
+System.out.println(); → Just type the output and press Enter [cursor moves to the next line]
+
+And one more thing — from the AI section:
+AI is your collaborator, not your replacement. Use it for boilerplate, explanations, and hints. Own the judgment, the design, and the debugging yourself. Fundamentals make you essential.
+
+Last changed by
+[topics content@scaler.com](https://hackmd.io/@topics)·Follow
+0
+8
+Add a comment
+Published on [HackMD](https://hackmd.io/)

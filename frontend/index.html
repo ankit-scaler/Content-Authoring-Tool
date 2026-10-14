@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scaler AI Script Studio | Production Authoring Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet">
+  <!-- Mermaid.js for Client-Side Diagram Rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <!-- Marked.js for Markdown Rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="styles.css?v=16.0">
+  <style>
+    .studio-subnav-btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      padding: 8px 18px !important;
+      border-radius: 8px !important;
+      font-size: 0.86rem !important;
+      font-weight: 600 !important;
+      cursor: pointer !important;
+      background: #ffffff !important;
+      color: #1e293b !important;
+      border: 1px solid #cbd5e1 !important;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+      transition: all 0.2s ease !important;
+      font-family: inherit !important;
+    }
+
+    .studio-subnav-btn:hover {
+      background: #f8fafc !important;
+      border-color: #0284c7 !important;
+      color: #0284c7 !important;
+    }
+
+    .studio-subnav-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #0284c7 !important;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25) !important;
+    }
+
+    .subnav-badge {
+      font-size: 0.74rem !important;
+      font-weight: 700 !important;
+      padding: 2px 8px !important;
+      border-radius: 12px !important;
+      background: rgba(2, 132, 199, 0.12) !important;
+      color: #0284c7 !important;
+    }
+
+    .studio-subnav-btn.active .subnav-badge {
+      background: rgba(255, 255, 255, 0.25) !important;
+      color: #ffffff !important;
+    }
+  </style>
+</head>
+
+<body class="light-theme">
+  <!-- Universal Loading Overlay (PRD NFR) -->
+  <div id="universalLoader" class="loader-overlay hidden">
+    <div class="loader-spinner"></div>
+    <div id="loaderMessage" class="loader-text">AI Agents Collaborating...</div>
+  </div>
+
+  <!-- Top Navigation Bar (Production Ready) -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-badge" onclick="showHomeDashboard()" style="cursor: pointer;" title="Go to Home Page Dashboard">
+        <span class="logo-text">SCALER <span class="logo-highlight">SCRIPT STUDIO</span></span>
+      </div>
+    </div>
+
+    <!-- Hidden compatibility controls for existing event hooks -->
+    <div class="hidden">
+      <select id="activeUserSelector"></select>
+      <select id="activeRoleSelector"></select>
+      <div id="userScopeBadge"></div>
+      <div id="activeScriptBadge"></div>
+      <button id="emailLoginBtn" onclick="openEmailLoginModal()"></button>
+    </div>
+
+    <div class="header-right">
+      <button id="signOutBtn" class="btn btn-secondary hidden" onclick="signOutCurrentUser()" title="Sign Out">Sign
+        Out</button>
+      <button id="themeToggleBtn" class="btn btn-secondary theme-toggle-btn" title="Switch Theme">Switch to
+        Dark</button>
+      <button id="moGtgBtn" class="btn btn-success hidden">Official MO GTG Sign-Off</button>
+    </div>
+  </header>
+
+  <!-- 0. HOME PAGE DASHBOARD (Scaler Enterprise Portal) -->
+  <div id="homeDashboardView" class="dashboard-view active">
+    <div class="home-portal-container">
+      <div class="home-portal-split-layout">
+        <!-- Left Column: Branding, Context & Capabilities -->
+        <div class="home-portal-left">
+          <h1 class="home-hero-title">Scaler AI Script Studio</h1>
+          <p class="home-hero-subtitle">Production authoring platform for lecture scripts, pedagogical outline
+            engineering, and locked curriculum governance.</p>
+
+          <div class="home-hero-highlights">
+            <div class="hero-highlight-item">
+              <div class="hero-highlight-bullet">1</div>
+              <div class="hero-highlight-text">
+                <span class="hero-highlight-title">SME Script Authoring</span>
+                <span class="hero-highlight-desc">Generate, pace, and refine lecture scripts scoped strictly to your
+                  enrolled programs with multi-agent AI.</span>
+              </div>
+            </div>
+
+            <div class="hero-highlight-item">
+              <div class="hero-highlight-bullet">2</div>
+              <div class="hero-highlight-text">
+                <span class="hero-highlight-title">Module Owner Governance</span>
+                <span class="hero-highlight-desc">Administer locked curriculum modules, maintain canonical class
+                  agendas, and issue official GTG marks.</span>
+              </div>
+            </div>
+
+            <div class="hero-highlight-item">
+              <div class="hero-highlight-bullet">3</div>
+              <div class="hero-highlight-text">
+                <span class="hero-highlight-title">Curriculum Progress Audit</span>
+                <span class="hero-highlight-desc">Global LO team visibility across all programs, class tracks, and
+                  delivery readiness statuses.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Official Scaler Company Email Authentication -->
+        <div class="home-portal-right">
+          <div class="scaler-login-card">
+            <div class="login-card-header">
+              <span class="login-badge-pill">Scaler Authentication</span>
+              <h2 class="login-card-title">Sign In with Scaler Company Email</h2>
+              <p class="login-card-desc">Enter your official @scaler.com email to access your enrolled programs and
+                authorized workspace tools.</p>
+            </div>
+
+            <form id="scalerCompanyLoginForm" onsubmit="event.preventDefault(); submitScalerCompanyLogin();"
+              class="login-form">
+              <div class="form-group">
+                <label for="companyMailInput">Official Scaler Company Email</label>
+                <input type="email" id="companyMailInput" class="form-control login-input"
+                  placeholder="e.g. example@scaler.com" required autocomplete="email"
+                  onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitScalerCompanyLogin(); }">
+                <div id="companyMailError" class="login-error-msg hidden"
+                  style="margin-top: 8px; color: #ef4444; font-size: 0.85rem; font-weight: 600;">Please enter a valid
+                  @scaler.com company email.</div>
+              </div>
+
+              <button type="button" id="companyMailSubmitBtn" class="btn btn-primary btn-block login-submit-btn"
+                onclick="submitScalerCompanyLogin()">
+                <span>Login with Scaler Email</span>
+                <span class="btn-arrow">&rarr;</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. SME / AUTHOR DASHBOARD (PRD ROLE 1) -->
+  <div id="smeDashboardView" class="dashboard-view hidden">
+
+    <!-- FIRST SCREEN AFTER LOGIN: Enrolled Programs Cards View -->
+    <div id="smeProgramsLandingView" class="sme-landing-container">
+      <div class="sme-landing-header">
+        <h1 class="sme-landing-title">My Enrolled Programs</h1>
+        <p class="sme-landing-subtitle">Select an enrolled program below to launch the AI Script Generator and begin
+          authoring class decks.</p>
+      </div>
+      <div id="smeEnrolledProgramsGrid" class="sme-programs-grid">
+        <div style="color: var(--text-secondary); padding: 20px;">Loading your enrolled programs...</div>
+      </div>
+
+    </div>
+
+    <!-- SECOND SCREEN: Script Authoring Studio Layout (Opened after clicking a program card) -->
+    <div id="smeAuthoringStudioLayout" class="hidden">
+      <!-- Minimalist Studio Top Bar -->
+      <div class="studio-top-bar">
+        <div class="studio-top-left">
+          <button class="btn btn-secondary back-to-landing-btn" onclick="showSmeLandingView()">&larr; Back to My
+            Enrolled Programs</button>
+          <span id="smeSelectedProgramBreadcrumb"
+            style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-left: 12px;"></span>
+        </div>
+
+        <div class="studio-top-right">
+          <button id="smeTabScriptsBtn" class="studio-subnav-btn" onclick="switchSmeStudioView('scripts')"
+            title="View All Generated Scripts">
+            <span>Program Scripts</span>
+            <span id="smeProgramScriptsNavBadge" class="subnav-badge">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- DEDICATED FULL-SCREEN SCRIPTS VIEW: ONLY SHOWS SCRIPTS -->
+      <div id="smeScriptsDedicatedView" class="hidden"
+        style="max-width: 1400px; margin: 24px auto 60px auto; padding: 0 24px;">
+        <div
+          style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 24px 28px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <h2 id="smeProgramScriptsTitle"
+                  style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin: 0;">
+                  Program Scripts</h2>
+                <span id="smeProgramScriptsCountBadge" class="status-pill status-gtg"
+                  style="font-size: 0.78rem; font-weight: 700;">0 Approved</span>
+                <span id="smeStudioTabScriptsBadge" style="display:none;">0</span>
+                <span id="headerScriptsBadge" style="display:none;">0</span>
+                <span id="emptyStateScriptsBadge" style="display:none;">0</span>
+              </div>
+              <p id="smeProgramScriptsSubtitle"
+                style="font-size: 0.88rem; color: var(--text-secondary); margin: 4px 0 0 0;">All lesson scripts
+                generated for this program.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <button class="btn btn-secondary" onclick="refreshCurrentProgramScripts()"
+                style="font-size: 0.85rem; padding: 8px 16px; font-weight: 600;">Refresh Scripts</button>
+              <button class="btn btn-primary" onclick="switchSmeStudioView('generator')"
+                style="font-size: 0.85rem; padding: 8px 18px; font-weight: 700; background: linear-gradient(135deg, #0284c7, #2563eb);">Create
+                New Script</button>
+            </div>
+          </div>
+
+          <div class="table-responsive"
+            style="border: 1px solid var(--border-subtle); border-radius: 10px; overflow: hidden;">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr>
+                  <th
+                    style="padding: 12px 16px; text-align: left; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); background: var(--bg-main); border-bottom: 1px solid var(--border-subtle);">
+                    Class Title</th>
+                  <th
+                    style="padding: 12px 16px; text-align: left; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); background: var(--bg-main); border-bottom: 1px solid var(--border-subtle);">
+                    Level</th>
+                  <th
+                    style="padding: 12px 16px; text-align: left; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); background: var(--bg-main); border-bottom: 1px solid var(--border-subtle);">
+                    Module</th>
+                  <th
+                    style="padding: 12px 16px; text-align: left; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); background: var(--bg-main); border-bottom: 1px solid var(--border-subtle);">
+                    Status</th>
+                  <th
+                    style="padding: 12px 16px; text-align: right; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); background: var(--bg-main); border-bottom: 1px solid var(--border-subtle);">
+                    Action</th>
+                </tr>
+              </thead>
+              <tbody id="smeProgramScriptsTableBody">
+                <tr>
+                  <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 28px;">Loading
+                    generated scripts...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. FULL-SCREEN SCRIPT GENERATOR INPUTS VIEW -->
+      <div id="smeInputsView" class="sme-fullscreen-inputs">
+        <div id="smeInputsContainer" class="sme-input-card">
+          <div class="sme-card-header">
+            <h2 class="sme-card-title">Script Generator Inputs</h2>
+            <p class="sme-card-desc">Configure your class details and pedagogical parameters to author your lecture
+              script.</p>
+          </div>
+
+          <!-- Compatibility hidden fields -->
+          <div style="display: none;">
+            <select id="programSelect">
+              <option value="">Select Program...</option>
+            </select>
+          </div>
+
+          <!-- 1. Track, Module & Class Title Row -->
+          <div class="sme-form-row">
+            <div class="form-group">
+              <label for="trackSelect">Track <span
+                  style="color: var(--danger-color, #ef4444); font-weight: 700;">*</span></label>
+              <select id="trackSelect" class="form-control" required>
+                <option value="">Choose Track</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="moduleSelect">Module <span
+                  style="color: var(--danger-color, #ef4444); font-weight: 700;">*</span></label>
+              <select id="moduleSelect" class="form-control" disabled required>
+                <option value="">Choose Module</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="classSelect">Class Title <span
+                  style="color: var(--danger-color, #ef4444); font-weight: 700;">*</span></label>
+              <select id="classSelect" class="form-control" disabled required>
+                <option value="">Choose Class Title</option>
+              </select>
+              <input type="hidden" id="classTitleInput">
+            </div>
+          </div>
+
+          <!-- 2. Class Agendas -->
+          <div class="form-group">
+            <label for="classAgendasInput">Class Agendas <span
+                style="color: var(--danger-color, #ef4444); font-weight: 700;">*</span></label>
+            <textarea id="classAgendasInput" class="form-control" rows="4"
+              placeholder="Enter class agendas (one per line)..." required></textarea>
+          </div>
+
+          <!-- 3. Learning Outcomes -->
+          <div class="form-group">
+            <label for="learningOutcomesInput">Learning Outcomes <span
+                style="color: var(--danger-color, #ef4444); font-weight: 700;">*</span> <span
+                style="font-size:0.78rem; color:var(--text-secondary); font-weight:400;">(Pre-filled by MO if set, or
+                enter manually)</span></label>
+            <textarea id="learningOutcomesInput" class="form-control" rows="3"
+              placeholder="e.g. Students will understand event-driven architecture and implement async message queues..."
+              required></textarea>
+          </div>
+
+          <!-- 3. Duration & Prev Scripts Row -->
+          <div class="sme-form-row">
+            <div class="form-group">
+              <div class="slider-header">
+                <label for="durationSelect">Duration <span
+                    style="color: var(--danger-color, #ef4444); font-weight: 700;">*</span></label>
+                <span id="durationVal" class="slider-val">Select duration</span>
+              </div>
+              <select id="durationSelect" class="form-control" required>
+                <option value="" selected>Choose Duration...</option>
+                <option value="30">30 Minutes</option>
+                <option value="40">40 Minutes</option>
+                <option value="50">50 Minutes</option>
+                <option value="60">60 Minutes</option>
+                <option value="70">70 Minutes</option>
+                <option value="80">80 Minutes</option>
+                <option value="90">90 Minutes (Standard)</option>
+                <option value="100">100 Minutes</option>
+                <option value="110">110 Minutes</option>
+                <option value="120">120 Minutes</option>
+                <option value="130">130 Minutes</option>
+                <option value="140">140 Minutes</option>
+                <option value="150">150 Minutes</option>
+                <option value="160">160 Minutes</option>
+                <option value="170">170 Minutes</option>
+                <option value="180">180 Minutes</option>
+              </select>
+              <input type="hidden" id="customDurationInput" value="">
+            </div>
+
+            <div class="form-group">
+              <label for="prevScriptFileInput">Prev Scripts <span
+                  style="font-size:0.78rem; color:var(--text-secondary); font-weight:400;">(Optional)</span></label>
+              <input type="file" id="prevScriptFileInput" accept=".txt,.md,.doc,.docx,.pdf" class="form-control">
+              <textarea id="prevScriptUpload" style="display: none;"></textarea>
+            </div>
+          </div>
+
+          <!-- 4. Content Mix & Code to Content Ratio Row -->
+          <div class="sme-form-row">
+            <div class="form-group">
+              <div class="slider-header">
+                <label for="mixSlider">Content Mix (Beginner + Adv Mix)</label>
+                <span id="mixVal" class="slider-val">70% Beg / 30% Adv</span>
+              </div>
+              <input type="range" id="mixSlider" min="10" max="90" value="70" class="range-slider">
+            </div>
+
+            <div class="form-group">
+              <div class="slider-header">
+                <label for="codeRatioSlider">Code to Content Ratio</label>
+                <span id="codeRatioVal" class="slider-val">20% Code / 80% Content</span>
+              </div>
+              <input type="range" id="codeRatioSlider" min="0" max="60" value="20" class="range-slider">
+            </div>
+          </div>
+
+          <!-- 5. Additional Resources -->
+          <div class="form-group" style="margin-top: 6px;">
+            <label for="referenceUrls">Additional Resources <span
+                style="font-size:0.78rem; color:var(--text-secondary); font-weight:400;">(Optional)</span></label>
+            <textarea id="referenceUrls" class="form-control" rows="3"
+              placeholder="Provide any additional resources, API documentation, reference links, or notes to consider while generating the script..."></textarea>
+            <input type="hidden" id="apiDocs">
+            <textarea id="additionalDirectives" style="display: none;"></textarea>
+          </div>
+
+          <div
+            style="display: flex; justify-content: flex-end; padding-top: 20px; border-top: 1px solid var(--border-subtle); margin-top: 8px;">
+            <button id="initScriptBtn" class="btn btn-primary btn-generate"
+              style="padding: 12px 28px; font-size: 0.95rem; font-weight: 700; background: linear-gradient(135deg, #0284c7, #2563eb); box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);">
+              Generate Lesson Outline
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. FULL-SCREEN OUTLINE REVIEW GATE -->
+      <div id="outlineGate" class="gate-container hidden"
+        style="max-width: 1400px; margin: 24px auto 60px auto; padding: 0 20px;">
+        <div class="gate-header">
+          <div>
+            <h2 class="gate-title">Step 3: Card Outline Gate (SME Human Gate)</h2>
+          </div>
+          <div class="gate-actions">
+            <button id="outlineRethinkBtn" class="btn btn-warning">[ReThink Outline]</button>
+            <button id="outlineGtgBtn" class="btn btn-success">[GTG Lock & Draft Script]</button>
+          </div>
+        </div>
+
+        <div id="outlineCardsList" class="outline-deck-grid"></div>
+      </div>
+
+      <!-- Live Script Studio & Teleprompter Delivery View -->
+      <div id="studioView" class="studio-container hidden">
+
+        <!-- Script View Top Nav Actions -->
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle); flex-wrap: wrap; gap: 8px;">
+          <button class="btn btn-secondary" onclick="switchSmeStudioView('scripts')"
+            style="font-weight: 600; font-size: 0.85rem; padding: 6px 14px;">&larr; Back to Program Scripts</button>
+          <button class="btn btn-secondary" onclick="switchSmeStudioView('generator')"
+            style="font-weight: 600; font-size: 0.85rem; padding: 6px 14px;">Create New Script</button>
+        </div>
+
+        <!-- Official MO GTG Sign-Off Banner for SME Authoring Studio -->
+        <div id="smeGtgApprovedBanner" class="hidden"
+          style="background: rgba(16, 185, 129, 0.12); border: 1px solid var(--success-color); border-radius: 8px; padding: 14px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span class="status-pill status-gtg"
+              style="font-size: 0.85rem; padding: 4px 12px; font-weight: 700;">Official GTG Approved</span>
+            <span style="font-size: 0.92rem; color: var(--text-primary); font-weight: 500;">
+              Granted by Module Owner. Production deck is officially sealed and memory ledger snapshot archived for next
+              class.
+            </span>
+          </div>
+          <span
+            style="font-size: 0.8rem; color: var(--success-color); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Sealed
+            Canonical Deck</span>
+        </div>
+
+        <!-- Studio Header with Clean Relevant Controls -->
+        <div class="studio-header">
+          <div class="studio-title-block">
+            <h2 id="studioClassTitle" class="studio-title">Class 1: Architecture Foundations</h2>
+            <!-- Hidden compatibility hooks for progress -->
+            <span id="studioCardProgress" style="display: none;"></span>
+            <span id="studioScorePill" style="display: none;"></span>
+            <span id="smeActiveScriptStatusPill" style="display: none;"></span>
+          </div>
+          <div class="studio-controls">
+            <!-- Dynamic Script Download Dropdown -->
+            <div class="download-dropdown-wrap" id="scriptDownloadDropdownWrap">
+              <button id="downloadDropdownBtn" class="btn btn-secondary" onclick="toggleDownloadDropdown(event)"
+                title="Download lecture script in relevant format"
+                style="font-weight: 600; padding: 9px 18px; display: inline-flex; align-items: center; gap: 6px;">
+                <span>Download Script</span>
+                <span class="dropdown-caret">&#9662;</span>
+              </button>
+              <div id="downloadDropdownMenu" class="download-dropdown-menu hidden">
+                <!-- Populated dynamically based on Program / Track / Subject -->
+              </div>
+            </div>
+
+            <button id="shareHackmdBtn" class="btn btn-primary" onclick="shareScriptToHackMD()"
+              title="Publish and get a live shareable link on HackMD.io"
+              style="background: linear-gradient(135deg, #0284c7, #2563eb); font-weight: 700; padding: 9px 20px;">Share
+              to HackMD</button>
+            <!-- Hidden compatibility hooks -->
+            <button id="copyScriptBtn" style="display: none;"></button>
+            <button id="assignmentsBtn" style="display: none;"></button>
+            <button id="draftAllBtn" style="display: none;"></button>
+            <button id="exportMdBtn" style="display: none;"></button>
+            <button id="runReviewBtn" style="display: none;"></button>
+          </div>
+        </div>
+
+        <!-- Multi-Agent Review Scorecard (Hidden by default, available if audited) -->
+        <div id="reviewScorecard" class="scorecard-container hidden">
+          <h3 class="scorecard-title">Multi-Agent Review Lenses (Gemini Flash + Moderator Auto-Repair)</h3>
+          <div id="reviewCardsGrid" class="review-grid"></div>
+        </div>
+
+        <!-- DEFINED SCRIPT DOCUMENT CANVAS (CLEAN CONTINUOUS DOCUMENT VIEW) -->
+        <div class="script-reader-wrapper">
+          <div id="scriptDocumentArea" class="script-document-canvas">
+            <!-- Document Header -->
+            <div class="script-doc-header">
+              <h1 id="scriptDocClassTitle" class="script-doc-title">Class Title</h1>
+              <div id="scriptDocHierarchy" class="script-doc-hierarchy">
+                <span id="scriptDocMetaDetails">Target Duration: 90 Mins</span>
+              </div>
+              <div class="script-doc-divider"></div>
+            </div>
+
+            <!-- Structured Flow of Sections -->
+            <div id="cardsStream" class="script-sections-flow"></div>
+
+            <!-- Interactive Section Progress & Gate Controls -->
+            <div id="sectionGateContainer" class="hidden"
+              style="margin: 28px 0; padding: 20px 24px; background: var(--bg-card); border: 1.5px dashed var(--primary-color); border-radius: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <h4 id="sectionGateTitle"
+                  style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0 0 4px 0;">Section 1
+                  Drafted</h4>
+                <p id="sectionGateSubtitle" style="font-size: 0.86rem; color: var(--text-secondary); margin: 0;">Review
+                  section above. Click GTG to draft next, or Prompt Assist to tweak.</p>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button id="sectionChatAssistBtn" class="btn btn-secondary" onclick="promptCurrentSectionAssist()"
+                  style="padding: 7px 16px; font-size: 0.84rem; font-weight: 600;">Prompt Assist</button>
+                <button id="sectionRethinkBtn" class="btn btn-secondary" onclick="rethinkCurrentSection()"
+                  style="padding: 7px 16px; font-size: 0.84rem; font-weight: 600;">ReThink</button>
+                <button id="sectionGtgBtn" class="btn btn-primary" onclick="advanceNextSection()"
+                  style="padding: 7px 20px; font-size: 0.84rem; font-weight: 700; background: var(--success-color); border-color: var(--success-color);">[GTG
+                  Section] & Draft Next</button>
+              </div>
+            </div>
+
+            <!-- Document Footer -->
+            <div class="script-doc-footer">
+              <span class="script-doc-footer-label">&mdash; End of Masterclass Lecture Script &mdash;</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Compatibility Hooks -->
+      <div id="emptyState" class="hidden"></div>
+      <div id="studioLeftPanel" class="hidden"></div>
+      <div id="studioRightPanel" class="hidden"></div>
+      <div id="smeGeneratorSplitLayout" class="hidden"></div>
+    </div> <!-- Close smeAuthoringStudioLayout -->
+  </div> <!-- Close smeDashboardView -->
+
+  <!-- 2. MODULE OWNER (MO) DASHBOARD (PRD ROLE 2) -->
+  <div id="moDashboardView" class="dashboard-view hidden">
+    <div class="dashboard-page-container">
+      <div class="dashboard-header-block">
+        <div>
+          <h1 class="dashboard-heading">Module Owner (MO) Workspace</h1>
+          <p class="dashboard-subheading">Curriculum governance, locked module administration, and official GTG script
+            approvals.</p>
+        </div>
+      </div>
+
+      <!-- Module Owner Unified Filters Toolbar -->
+      <div class="mo-filter-bar">
+        <div class="filter-item search-filter">
+          <input type="text" id="moSearchInput" class="form-control" placeholder="Search classes, modules, or tracks..."
+            oninput="applyMoFilters()">
+        </div>
+        <div class="filter-item">
+          <select id="moStatusFilter" class="form-control" onchange="applyMoFilters()">
+            <option value="">All Script Statuses</option>
+            <option value="Script WIP">Pending Review (WIP)</option>
+            <option value="GTG">Approved (GTG)</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <select id="moModuleTypeFilter" class="form-control" onchange="applyMoFilters()">
+            <option value="">All Module Types</option>
+            <option value="Core">Core Modules</option>
+            <option value="Specialisation">Specialisation</option>
+            <option value="Elective">Elective</option>
+          </select>
+        </div>
+        <button id="refreshMoDashboardBtn" class="btn btn-secondary" onclick="loadMoDashboardData()">Refresh</button>
+        <button class="btn btn-secondary" onclick="resetMoFilters()">Reset</button>
+      </div>
+
+      <!-- Hidden hook for moAssignedProgramsTags compatibility -->
+      <div id="moAssignedProgramsTags" class="hidden"></div>
+
+      <!-- ROW 1: Script Review Data -->
+      <div class="mo-metric-row-section">
+        <div class="mo-row-header">
+          <span class="mo-row-title">Script Review Pipeline</span>
+          <span class="mo-row-subtitle">Status of authored class scripts awaiting or granted official GTG
+            sign-off</span>
+        </div>
+        <div class="metric-cards-grid">
+          <div class="metric-card">
+            <span class="metric-label">Pending MO Review</span>
+            <span id="moPendingReviewCount" class="metric-number">0</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Approved GTG</span>
+            <span id="moApprovedCount" class="metric-number">0</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Total Authored Scripts</span>
+            <span id="moTotalScriptsCount" class="metric-number">0</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">GTG Sign-Off Rate</span>
+            <span id="moGtgRatePct" class="metric-number">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MO Section 1: Scripts Pending Approval Queue -->
+      <div class="panel-section"
+        style="background: var(--bg-card); padding: 20px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary);">Scripts Awaiting Module Owner
+              Sign-Off</h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">Review authored scripts and grant the canonical
+              GTG (Good to Go) mark.</p>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Program</th>
+                <th>Track & Module</th>
+                <th>Class Title</th>
+                <th>Duration</th>
+                <th>Cards</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="moPendingScriptsTableBody">
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-secondary);">Loading pending scripts
+                  queue...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MO Section 2: Curriculum Structure Management -->
+      <div class="panel-section"
+        style="background: var(--bg-card); padding: 20px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary);">Curriculum Architecture &
+              Locking Console</h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">Manage tracks, levels, modules, and classes
+              within your assigned programs. Changes sync immediately to SME authoring dropdowns.</p>
+          </div>
+        </div>
+        <div id="moDashboardTreeContainer">
+          <div class="loader-text">Loading curriculum hierarchy...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. PROGRAM MANAGER (PM) DASHBOARD (PRD ROLE 3 - READ-ONLY) -->
+  <div id="pmDashboardView" class="dashboard-view hidden">
+    <div class="dashboard-page-container">
+      <div class="dashboard-header-block">
+        <div>
+          <h1 class="dashboard-heading">Program Manager (PM) Dashboard</h1>
+          <p class="dashboard-subheading">Curriculum completion tracking, script status auditing, and delivery metrics
+            across all 5 programs (Read-Only).</p>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <input type="text" id="pmClassSearchInput" class="form-control" placeholder="Search class or topic..."
+            style="width: 250px;">
+          <select id="pmProgramFilterSelect" class="form-control" style="width: 220px;">
+            <option value="">All 5 Programs</option>
+          </select>
+          <button id="refreshPmDashboardBtn" class="btn btn-secondary">Refresh Audit</button>
+        </div>
+      </div>
+
+      <!-- PM High-Level KPIs -->
+      <div class="metric-cards-grid">
+        <div class="metric-card">
+          <span class="metric-label">Total Programs</span>
+          <span id="pmTotalPrograms" class="metric-number">5</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Active Modules</span>
+          <span id="pmTotalModules" class="metric-number">129</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Total Classes</span>
+          <span id="pmTotalClasses" class="metric-number">1,765</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Total Scripts Generated</span>
+          <span id="pmTotalScripts" class="metric-number">0</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Official GTG Marked</span>
+          <span id="pmGtgCount" class="metric-number">0</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">GTG Completion Rate</span>
+          <span id="pmGtgRate" class="metric-number">0.0%</span>
+        </div>
+      </div>
+
+      <!-- PM Script Status Matrix -->
+      <div class="panel-section"
+        style="background: var(--bg-card); padding: 20px; border-radius: 8px; border: 1px solid var(--border-subtle);">
+        <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Global
+          Curriculum Script Status Matrix</h2>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Program</th>
+                <th>Track</th>
+                <th>Module</th>
+                <th>Class Title</th>
+                <th>Class Type</th>
+                <th>Target Time</th>
+                <th>Script Status</th>
+                <th>Read-Only Link</th>
+              </tr>
+            </thead>
+            <tbody id="pmCoverageTableBody">
+              <tr>
+                <td colspan="8" style="text-align: center; color: var(--text-secondary);">Loading global curriculum
+                  audit...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. ADMIN DASHBOARD (PRD ROLE 4) -->
+  <div id="adminDashboardView" class="dashboard-view hidden">
+    <div class="dashboard-page-container">
+      <div class="dashboard-header-block">
+        <div>
+          <h1 class="dashboard-heading">Admin System & Governance Console</h1>
+        </div>
+        <div>
+          <button id="refreshAdminDashboardBtn" class="btn btn-secondary">Refresh Diagnostics</button>
+        </div>
+      </div>
+
+
+      <!-- Admin Navigation Tabs -->
+      <div class="admin-tab-nav">
+        <button id="adminTabBtnUsers" class="admin-tab-btn active" onclick="switchAdminTab('users')">Users & SME
+          Enrollment</button>
+        <button id="adminTabBtnCurriculum" class="admin-tab-btn" onclick="switchAdminTab('curriculum')">Curriculum
+          Architecture (Programs, Tracks & Modules)</button>
+        <button id="adminTabBtnScripts" class="admin-tab-btn" onclick="switchAdminTab('scripts')">Generated Scripts &
+          Approvals</button>
+        <button id="adminTabBtnActivities" class="admin-tab-btn" onclick="switchAdminTab('activities')">User
+          Activities</button>
+      </div>
+
+      <!-- Tab 1: Users, Roles & SME Program Enrollment -->
+      <div id="adminTabUsers" class="admin-tab-panel">
+        <div class="panel-section"
+          style="background: var(--bg-card); padding: 20px; border-radius: 8px; border: 1px solid var(--border-subtle); margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div>
+              <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">Users, Roles &
+                Program Membership Governance</h2>
+            </div>
+            <button class="btn btn-primary" onclick="openAddUserModal()">+ Add New User</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Access Scope / Joined Programs</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminUsersTableBody">
+                <tr>
+                  <td colspan="6" style="text-align: center; color: var(--text-secondary);">Loading user directory...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Unified Curriculum Architecture Tree (Programs, Tracks, Levels, Modules & Classes) -->
+      <div id="adminTabCurriculum" class="admin-tab-panel hidden">
+        <div class="panel-section"
+          style="background: var(--bg-card); padding: 20px; border-radius: 8px; border: 1px solid var(--border-subtle); margin-bottom: 24px;">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">Curriculum
+                Architecture & Structure</h2>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <input type="text" id="adminTreeSearchInput" class="form-control"
+                placeholder="Search tracks, modules, classes..."
+                style="width: 250px; font-size: 0.82rem; padding: 6px 12px;" oninput="filterAdminTree(this.value)">
+              <button id="treeExpandToggleBtn" class="btn btn-secondary" onclick="toggleExpandAllTree()"
+                style="font-size: 0.82rem; padding: 6px 12px;">Collapse All</button>
+              <button class="btn btn-primary" onclick="openAddProgramModal()"
+                style="font-size: 0.82rem; padding: 6px 12px;">+ Add Program</button>
+            </div>
+          </div>
+
+          <!-- Program Sub-Tabs Navigation (5 Programs) -->
+          <div id="adminCurriculumProgramSubTabs" class="program-subtabs-nav"
+            style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: nowrap; overflow-x: auto; align-items: center;">
+          </div>
+
+          <!-- Track Sub-Tabs Navigation (e.g. Beginner Track, Intermediate Track, Advanced Track) -->
+          <div id="adminCurriculumTrackSubTabs" class="track-subtabs-nav"
+            style="display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; flex-wrap: wrap;">
+          </div>
+
+          <div id="adminCurriculumTreeContainer">
+            <div class="loader-text">Loading curriculum architecture...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Generated Scripts & MO Approvals Audit Ledger -->
+      <div id="adminTabScripts" class="admin-tab-panel hidden">
+        <div class="panel-section"
+          style="background: var(--bg-card); padding: 20px; border-radius: 8px; border: 1px solid var(--border-subtle); margin-bottom: 24px;">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary);">All Generated Scripts & MO
+                Approvals Audit</h2>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <input type="text" id="adminScriptsSearchInput" class="form-control"
+                placeholder="Search SME, Class, Module..." style="width: 220px; font-size: 0.82rem; padding: 6px 12px;"
+                oninput="filterAdminScriptsTable()">
+              <select id="adminScriptsProgramFilter" class="form-control"
+                style="width: 180px; font-size: 0.82rem; padding: 6px 12px;" onchange="filterAdminScriptsTable()">
+                <option value="">All Programs</option>
+              </select>
+              <select id="adminScriptsStatusFilter" class="form-control"
+                style="width: 150px; font-size: 0.82rem; padding: 6px 12px;" onchange="filterAdminScriptsTable()">
+                <option value="">All Statuses</option>
+                <option value="GTG">Approved (GTG)</option>
+                <option value="Script WIP">Script WIP</option>
+              </select>
+              <button class="btn btn-secondary" onclick="loadAdminScriptsTable()"
+                style="font-size: 0.82rem; padding: 6px 12px;">Refresh</button>
+            </div>
+          </div>
+
+          <!-- Dynamic KPI Cards for Admin Scripts -->
+          <div class="metric-cards-grid" style="margin-bottom: 20px;">
+            <div class="metric-card">
+              <span class="metric-label">Total Generated Scripts</span>
+              <span id="adminTotalScriptsCount" class="metric-number">0</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Approved by MO (GTG)</span>
+              <span id="adminGtgScriptsCount" class="metric-number" style="color: var(--success-color);">0</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">In Progress (WIP)</span>
+              <span id="adminWipScriptsCount" class="metric-number" style="color: var(--warning-color);">0</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Active SME Authors</span>
+              <span id="adminActiveSmesCount" class="metric-number" style="color: var(--primary-accent);">0</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Total MOs</span>
+              <span id="adminTotalMosCount" class="metric-number" style="color: var(--purple-accent, #8b5cf6);">0</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Total PMs</span>
+              <span id="adminTotalPmsCount" class="metric-number" style="color: #06b6d4;">0</span>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Script ID</th>
+                  <th>Program & Track</th>
+                  <th>Module & Class Title</th>
+                  <th>SME Author</th>
+                  <th>Generated At</th>
+                  <th>Approved At (MO)</th>
+                  <th>Approved By (MO)</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminScriptsTableBody">
+                <tr>
+                  <td colspan="9" style="text-align: center; color: var(--text-secondary); padding: 24px;">Loading
+                    scripts audit ledger...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Platform User Activities Ledger -->
+      <div id="adminTabActivities" class="admin-tab-panel hidden">
+        <div class="panel-section"
+          style="background: var(--bg-card); padding: 22px; border-radius: 8px; border: 1px solid var(--border-subtle); margin-bottom: 24px;">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">Platform User
+                Activities</h2>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <input type="text" id="adminActivitySearchInput" class="form-control"
+                placeholder="Search user, activity, date..."
+                style="width: 220px; font-size: 0.82rem; padding: 6px 12px;" oninput="filterAdminActivities()">
+              <select id="adminActivityRoleFilter" class="form-control"
+                style="width: 140px; font-size: 0.82rem; padding: 6px 12px;" onchange="filterAdminActivities()">
+                <option value="">All Roles</option>
+                <option value="sme">SME</option>
+                <option value="mo">MO</option>
+                <option value="pm">PM</option>
+                <option value="admin">Admin</option>
+              </select>
+              <button class="btn btn-secondary" style="font-size: 0.82rem; padding: 6px 12px;"
+                onclick="loadUserActivities()">Refresh Activities</button>
+            </div>
+          </div>
+
+          <!-- User Activities Table -->
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 70px;">ID</th>
+                  <th style="width: 160px;">User Name</th>
+                  <th style="width: 100px;">Role</th>
+                  <th style="width: 170px;">Action / Type</th>
+                  <th>Activity Done</th>
+                  <th style="width: 120px;">Date</th>
+                  <th style="width: 110px;">Time</th>
+                </tr>
+              </thead>
+              <tbody id="adminActivitiesTableBody">
+                <tr>
+                  <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 24px;">Loading user
+                    activities...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Edit Modal (PRD FR-11) -->
+  <div id="cardEditModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="editModalTitle">Edit Card</h3>
+        <button id="closeEditModalBtn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editCardId">
+        <div class="form-group">
+          <label>Card Title</label>
+          <input type="text" id="editCardTitle" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Stage Directions (Whiteboard / Staging)</label>
+          <input type="text" id="editCardStageDir" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Verbatim Spoken Script (Dialog for Live Class)</label>
+          <textarea id="editCardScript" class="form-control" rows="8"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Code Snippet</label>
+          <textarea id="editCardCode" class="form-control" rows="4" style="font-family: monospace;"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="saveCardEditBtn" class="btn btn-primary">Save Card Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Chat Co-Pilot Assist Modal (PRD FR-11 & FR-21) -->
+  <div id="chatAssistModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="chatModalTitle">AI Chat Assist</h3>
+        <button id="closeChatModalBtn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="chatCardIndex">
+        <p class="section-desc">Ask Claude Sonnet to refine this card (e.g. "Simplify for non-CS learners", "Add a
+          failure mode for memory limit", "Make analogy sharper").</p>
+        <div class="form-group" style="margin-top: 12px;">
+          <textarea id="chatPromptInput" class="form-control" rows="3"
+            placeholder="What revision would you like to make to this card?"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="submitChatAssistBtn" class="btn btn-accent">Apply AI Revision</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assignments & Mock Interviews Modal (PRD FR-23) -->
+  <div id="assignmentsModal" class="modal-overlay hidden">
+    <div class="modal-card modal-large">
+      <div class="modal-header">
+        <h3 id="assignmentsModalTitle">Assignments & Mock Interview Questions (PRD FR-23)</h3>
+        <button id="closeAssignmentsModalBtn" class="close-btn">&times;</button>
+      </div>
+      <div id="assignmentsModalBody" class="modal-body">
+        <div id="assignmentsContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module Owner (MO) Curriculum Console Modal (PRD FR-3, FR-5) -->
+  <div id="moCurriculumModal" class="modal-overlay hidden">
+    <div class="modal-card modal-large" style="max-width: 1050px; height: 85vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <div>
+          <h3 id="moModalTitle">Module Owner (MO) Curriculum Console</h3>
+          <p class="section-desc">Manage curriculum structure, module locking, and class agendas. All edits save to the
+            official database and update SME dropdowns immediately.</p>
+        </div>
+        <button id="closeMoModalBtn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 16px;">
+        <div style="display: flex; gap: 12px; margin-bottom: 16px; align-items: center;">
+          <label style="font-weight: 600; font-size: 0.9rem;">Filter Program:</label>
+          <select id="moProgramFilter" class="form-control" style="max-width: 300px;">
+            <option value="">All 5 Programs</option>
+          </select>
+          <button id="refreshMoTreeBtn" class="btn btn-secondary">Refresh Tree</button>
+        </div>
+
+        <div id="moCurriculumTreeContainer"
+          style="border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; background: var(--bg-card); max-height: calc(85vh - 220px); overflow-y: auto;">
+          <div class="loader-text">Loading curriculum tree...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MO Edit Class Sub-Modal -->
+  <div id="moEditClassModal" class="modal-overlay hidden" style="z-index: 1100;">
+    <div class="modal-card" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 id="moEditClassTitle">Edit Class Details</h3>
+        <button id="closeMoEditClassBtn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="moEditClassId">
+        <div class="form-group">
+          <label for="moClassTitleInput">Class Title</label>
+          <input type="text" id="moClassTitleInput" class="form-control">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label for="moClassDurationInput">Duration (Minutes)</label>
+            <input type="number" id="moClassDurationInput" class="form-control" min="30" max="180">
+          </div>
+          <div class="form-group">
+            <label for="moClassTypeInput">Class Type</label>
+            <select id="moClassTypeInput" class="form-control">
+              <option value="Live">Live Masterclass</option>
+              <option value="Inverted">Inverted</option>
+              <option value="Lab">Lab Session</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="moClassModuleTypeInput">Module Tag</label>
+            <select id="moClassModuleTypeInput" class="form-control">
+              <option value="Core">Core</option>
+              <option value="Specialisation">Specialisation</option>
+              <option value="Elective">Elective</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 12px;">
+          <label for="moClassAgendasInput">Official Agendas (One per line)</label>
+          <textarea id="moClassAgendasInput" class="form-control" rows="5"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between;">
+        <button id="deleteMoClassBtn" class="btn btn-warning">Delete Class</button>
+        <button id="saveMoClassBtn" class="btn btn-primary">Save & Sync Dropdowns</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Curriculum Action Modal (Add / Edit Program, Track, Module) -->
+  <div id="curriculumEntityModal" class="modal-overlay hidden" style="z-index: 1150;">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 id="curriculumEntityModalTitle">Curriculum Item</h3>
+        <button id="closeCurriculumEntityModalBtn" class="close-btn"
+          onclick="closeCurriculumEntityModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="curriculumEntityType">
+        <input type="hidden" id="curriculumEntityAction">
+        <input type="hidden" id="curriculumEntityId">
+        <input type="hidden" id="curriculumEntityParentId">
+
+        <div class="form-group">
+          <label id="curriculumEntityNameLabel" for="curriculumEntityNameInput">Name</label>
+          <input type="text" id="curriculumEntityNameInput" class="form-control" placeholder="Enter name...">
+        </div>
+
+        <div id="curriculumEntityDescGroup" class="form-group hidden" style="margin-top: 12px;">
+          <label for="curriculumEntityDescInput">Description (Optional)</label>
+          <textarea id="curriculumEntityDescInput" class="form-control" rows="3"
+            placeholder="Enter curriculum program description..."></textarea>
+        </div>
+
+        <div id="curriculumEntityApprovedSourcesGroup" class="form-group hidden" style="margin-top: 12px;">
+          <label for="curriculumEntityApprovedSourcesInput">Approved Reference Sources (FR-12)</label>
+          <textarea id="curriculumEntityApprovedSourcesInput" class="form-control" rows="3"
+            placeholder="e.g. https://docs.spring.io/spring-boot/docs/3.2.x/reference/html/, https://kafka.apache.org/documentation/"></textarea>
+          <small style="color: var(--text-secondary); font-size: 0.78rem;">Official documentation URLs the AI will use
+            as primary references for this module's scripts.</small>
+        </div>
+
+        <div id="curriculumEntityModuleTypeGroup" class="form-group hidden" style="margin-top: 12px;">
+          <label for="curriculumEntityModuleTypeSelect">Module Type</label>
+          <select id="curriculumEntityModuleTypeSelect" class="form-control">
+            <option value="Core">Core</option>
+            <option value="Specialisation">Specialisation</option>
+            <option value="Elective">Elective</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn btn-secondary" onclick="closeCurriculumEntityModal()">Cancel</button>
+        <button type="button" id="curriculumEntitySubmitBtn" class="btn btn-primary"
+          onclick="submitCurriculumEntityForm()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Curriculum Confirm Deletion Modal -->
+  <div id="curriculumConfirmModal" class="modal-overlay hidden" style="z-index: 1250;">
+    <div class="modal-card" style="max-width: 460px;">
+      <div class="modal-header">
+        <h3 id="curriculumConfirmTitle" style="color: var(--danger-color);">Confirm Deletion</h3>
+        <button id="closeCurriculumConfirmModalBtn" class="close-btn"
+          onclick="closeCurriculumConfirmModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="confirmDeleteType">
+        <input type="hidden" id="confirmDeleteId">
+        <p id="curriculumConfirmMessage" style="font-size: 0.95rem; color: var(--text-primary); line-height: 1.5;"></p>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn btn-secondary" onclick="closeCurriculumConfirmModal()">Cancel</button>
+        <button type="button" id="curriculumConfirmDeleteBtn" class="btn btn-warning"
+          onclick="executeCurriculumDeletion()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MO GTG Sign-Off Approval Modal -->
+  <div id="moGtgApprovalModal" class="modal-overlay hidden" style="z-index: 1260;">
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 id="moGtgApprovalTitle" style="color: var(--success-color);">Grant Official MO GTG Mark</h3>
+        <button id="closeMoGtgApprovalModalBtn" class="close-btn" onclick="closeMoGtgApprovalModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="gtgApprovalScriptId">
+        <p id="moGtgApprovalMessage"
+          style="font-size: 0.95rem; color: var(--text-primary); line-height: 1.6; margin-bottom: 12px;"></p>
+        <div
+          style="background: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 12px; font-size: 0.85rem; color: var(--text-secondary);">
+          <div>&bull; Seals production script cards as official canonical material.</div>
+          <div style="margin-top: 4px;">&bull; Archives pedagogical memory ledger snapshots for Class N+1 continuity.
+          </div>
+          <div style="margin-top: 4px;">&bull; Updates delivery readiness metrics across all dashboard monitors.</div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn btn-secondary" onclick="closeMoGtgApprovalModal()">Cancel</button>
+        <button type="button" id="confirmGtgApprovalBtn" class="btn btn-success" onclick="executeGtgApproval()">Apply
+          GTG Sign-Off</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Management Modal (PRD Users & Roles) -->
+  <div id="userManageModal" class="modal-overlay hidden" style="z-index: 1200;">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 id="userManageModalTitle">Add New User</h3>
+        <button id="closeUserManageModalBtn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editUserId">
+        <div class="form-group">
+          <label for="userNameInput">Full Name</label>
+          <input type="text" id="userNameInput" class="form-control" placeholder="e.g. Ankit Sharma">
+        </div>
+        <div class="form-group">
+          <label for="userEmailInput">Email Address</label>
+          <input type="email" id="userEmailInput" class="form-control" placeholder="e.g. ankit.sme@scaler.com">
+        </div>
+        <div class="form-group">
+          <label for="userRoleInput">Role in System</label>
+          <select id="userRoleInput" class="form-control">
+            <option value="sme">SME / Author (Generates, writes and edits class scripts with AI help)</option>
+            <option value="mo">Module Owner - MO (Edits curriculum lists & grants GTG mark)</option>
+            <option value="pm">Program Manager - PM (Read-Only access across all programs)</option>
+            <option value="admin">Admin (Manages programs, tracks, levels, users & structure)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-weight: 600;">Joined Programs (Scope of Access)</span>
+            <span style="font-size: 0.72rem; color: var(--text-secondary);">Select programs this user has joined</span>
+          </label>
+          <div id="userProgramCheckboxes"
+            style="display: flex; flex-direction: column; gap: 8px; background: var(--bg-panel); padding: 12px; border-radius: 6px; border: 1px solid var(--border-subtle); max-height: 180px; overflow-y: auto;">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button id="cancelUserManageBtn" class="btn btn-secondary">Cancel</button>
+        <button id="saveUserBtn" class="btn btn-primary">Save User & Access Scope</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Course Outline Preview Modal -->
+  <div id="courseOutlineModal" class="modal-overlay hidden" style="z-index: 1250;">
+    <div class="modal-card"
+      style="max-width: 950px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 id="courseOutlineModalTitle">Course Outline</h3>
+        <button class="close-btn" onclick="closeLevelOutlineModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="overflow-y: auto; padding: 20px;">
+        <p id="courseOutlineModalSubtitle"
+          style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;"></p>
+        <div style="overflow-x: auto; border: 1px solid var(--border-subtle); border-radius: 8px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+            <thead>
+              <tr style="background: var(--bg-card); border-bottom: 2px solid var(--border-subtle);">
+                <th style="padding: 10px 14px; text-align: left; font-weight: 700; color: var(--text-secondary);">#</th>
+                <th style="padding: 10px 14px; text-align: left; font-weight: 700; color: var(--text-secondary);">
+                  Segment</th>
+                <th style="padding: 10px 14px; text-align: left; font-weight: 700; color: var(--text-secondary);">Type
+                </th>
+                <th style="padding: 10px 14px; text-align: left; font-weight: 700; color: var(--text-secondary);">Module
+                  Name</th>
+                <th style="padding: 10px 14px; text-align: left; font-weight: 700; color: var(--text-secondary);">
+                  Duration</th>
+                <th style="padding: 10px 14px; text-align: center; font-weight: 700; color: var(--text-secondary);">
+                  Classes</th>
+              </tr>
+            </thead>
+            <tbody id="courseOutlineModalTableBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer"
+        style="display: flex; justify-content: flex-end; padding: 14px 20px; border-top: 1px solid var(--border-subtle);">
+        <button class="btn btn-secondary" onclick="closeLevelOutlineModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email Login Modal -->
+  <div id="emailLoginModal" class="modal-overlay hidden" style="z-index: 1300;">
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 id="emailLoginTitle">Login with Email</h3>
+        <button id="closeEmailLoginModalBtn" class="close-btn" onclick="closeEmailLoginModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="section-desc">Enter your registered email address to sign into the system. If you are an SME, your
+          enrolled programs will be displayed immediately upon login.</p>
+        <div class="form-group" style="margin-top: 10px;">
+          <label for="emailLoginInput">Work Email Address</label>
+          <input type="email" id="emailLoginInput" class="form-control" placeholder="e.g. ankit.sme@scaler.com"
+            autocomplete="email">
+        </div>
+
+        <div style="margin-top: 14px;">
+          <div style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px;">Demo
+            Profiles (Click to Auto-Fill):</div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <button type="button" class="btn btn-secondary"
+              style="text-align: left; justify-content: flex-start; padding: 6px 12px; font-size: 0.8rem;"
+              onclick="fillEmailLogin('ankit.sme@scaler.com')">
+              <strong>ankit.sme@scaler.com</strong> &mdash; SME (Academy, DSML)
+            </button>
+            <button type="button" class="btn btn-secondary"
+              style="text-align: left; justify-content: flex-start; padding: 6px 12px; font-size: 0.8rem;"
+              onclick="fillEmailLogin('ruchira.sme@scaler.com')">
+              <strong>ruchira.sme@scaler.com</strong> &mdash; SME (DevOps, AI FDE, AI/ML)
+            </button>
+            <button type="button" class="btn btn-secondary"
+              style="text-align: left; justify-content: flex-start; padding: 6px 12px; font-size: 0.8rem;"
+              onclick="fillEmailLogin('rohan.mo@scaler.com')">
+              <strong>rohan.mo@scaler.com</strong> &mdash; Module Owner (Academy)
+            </button>
+            <button type="button" class="btn btn-secondary"
+              style="text-align: left; justify-content: flex-start; padding: 6px 12px; font-size: 0.8rem;"
+              onclick="fillEmailLogin('priya.pm@scaler.com')">
+              <strong>priya.pm@scaler.com</strong> &mdash; Program Manager (All Programs Read-Only)
+            </button>
+            <button type="button" class="btn btn-secondary"
+              style="text-align: left; justify-content: flex-start; padding: 6px 12px; font-size: 0.8rem;"
+              onclick="fillEmailLogin('admin@scaler.com')">
+              <strong>admin@scaler.com</strong> &mdash; Administrator (Full Governance)
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn btn-secondary" onclick="closeEmailLoginModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitEmailLogin()">Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reassign Module Track Modal -->
+  <div id="reassignTrackModal" class="modal-overlay hidden" style="z-index: 1270;">
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>Reassign Module to Track</h3>
+        <button class="close-btn"
+          onclick="document.getElementById('reassignTrackModal').classList.add('hidden')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="reassignModuleId">
+        <div class="form-group">
+          <label for="reassignTrackSelect">Select Target Track</label>
+          <select id="reassignTrackSelect" class="form-control"></select>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn btn-secondary"
+          onclick="document.getElementById('reassignTrackModal').classList.add('hidden')">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmReassignModuleTrack()">Reassign</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Syllabus Upload Modal (FR-3) -->
+  <div id="syllabusUploadModal" class="modal-overlay hidden" style="z-index: 1280;">
+    <div class="modal-card" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3 id="syllabusModalTitle">Upload Syllabus for Module</h3>
+        <button class="close-btn"
+          onclick="document.getElementById('syllabusUploadModal').classList.add('hidden')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="syllabusModuleId">
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 14px;">Paste your syllabus text
+          below. The AI will parse it into classes with titles, agendas, and learning outcomes. The module will move to
+          "In Review" status until you lock it.</p>
+        <div class="form-group">
+          <label for="syllabusTextInput">Syllabus Text</label>
+          <textarea id="syllabusTextInput" class="form-control" rows="10"
+            placeholder="Class 1: Introduction to Event-Driven Architecture&#10;- What is EDA&#10;- Producer/Consumer model&#10;- Real-world use cases&#10;&#10;Class 2: Kafka Fundamentals&#10;- Topics and partitions&#10;- Brokers and clusters"></textarea>
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+          <label for="syllabusModeSelect">Import Mode</label>
+          <select id="syllabusModeSelect" class="form-control">
+            <option value="merge">Merge (keep existing classes, add parsed ones)</option>
+            <option value="replace">Replace (remove existing classes without scripts)</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn btn-secondary"
+          onclick="document.getElementById('syllabusUploadModal').classList.add('hidden')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitSyllabusUpload()">Parse & Import Classes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single Card Edit Modal -->
+  <div id="singleCardEditModal" class="modal-overlay hidden" style="z-index: 1280;">
+    <div class="modal-card" style="max-width: 580px; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 id="singleCardEditModalTitle">Edit Card</h3>
+        <button class="close-btn"
+          onclick="document.getElementById('singleCardEditModal').classList.add('hidden')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 16px 20px; display: flex; flex-direction: column; gap: 14px;">
+        <input type="hidden" id="singleCardEditIndex">
+        <div class="form-group">
+          <label
+            style="font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Card
+            Title</label>
+          <input type="text" id="singleCardEditTitle" class="form-control"
+            style="font-size: 0.92rem; font-weight: 600;">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label
+              style="font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Duration
+              (minutes)</label>
+            <input type="number" id="singleCardEditDuration" class="form-control" min="1" max="25" step="0.5">
+          </div>
+          <div class="form-group">
+            <label
+              style="font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Pedagogical
+              Phase</label>
+            <select id="singleCardEditPhase" class="form-control">
+              <option value="INSTRUCTOR_NOTE">Instructor Note</option>
+              <option value="Metadata & Lock">Metadata & Lock</option>
+              <option value="Agenda">Agenda</option>
+              <option value="Concept">Concept</option>
+              <option value="Failure Mode">Failure Mode</option>
+              <option value="Code Trace">Code Trace</option>
+              <option value="Mental Model">Mental Model</option>
+              <option value="Hands-on">Hands-on</option>
+              <option value="Quiz">Quiz</option>
+              <option value="Recap">Recap</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label
+            style="font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Key
+            Concept / Description</label>
+          <textarea id="singleCardEditConcept" class="form-control" rows="3"
+            placeholder="Core pedagogical concept, analogy or breakdown..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 20px;">
+        <button class="btn btn-secondary"
+          onclick="document.getElementById('singleCardEditModal').classList.add('hidden')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveSingleCardEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single Card Chat Modal -->
+  <div id="singleCardChatModal" class="modal-overlay hidden" style="z-index: 1280;">
+    <div class="modal-card" style="max-width: 520px; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 id="singleCardChatModalTitle">Chat</h3>
+        <button class="close-btn"
+          onclick="document.getElementById('singleCardChatModal').classList.add('hidden')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 16px 20px;">
+        <input type="hidden" id="singleCardChatIndex">
+        <div class="form-group" style="margin-bottom: 0;">
+          <textarea id="singleCardChatPrompt" class="form-control" rows="4"
+            placeholder="Enter your prompt / revision instructions for this card..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 20px;">
+        <button class="btn btn-secondary"
+          onclick="document.getElementById('singleCardChatModal').classList.add('hidden')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitSingleCardChat()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=26.0"></script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+# ==============================================================================
+# SECRETS, CREDENTIALS & SENSITIVE KEYS (STRICTLY PROHIBITED)
+# ==============================================================================
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+*.key
+*.pem
+*.token
+
+# ==============================================================================
+# PYTHON RUNTIME, VIRTUAL ENVIRONMENTS & COMPILATION ARTIFACTS
+# ==============================================================================
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ==============================================================================
+# LOCAL DATABASE RUNTIME, LOCKS, LOGS & TEMPORARY BACKUPS
+# ==============================================================================
+# SQLite dynamic locks and journals
+backend/*.db-shm
+backend/*.db-wal
+backend/*.db.bak*
+backend/scripts.db.bak*
+backend/script_generator.db
+
+# ==============================================================================
+# LOCAL SCRATCH, AUDITS, BROCHURES, JUPYTER TEST FILES & DIAGNOSTIC LOGS
+# ==============================================================================
+scratch/
+Documents/
+*.ipynb
+*.log
+.system_generated/
+*.tmp
+*~
+
+# Local audit txt logs and comparison notes
+brochure_missing_and_changes.txt
+curriculum_brochure_vs_live_audit.txt
+backend/check_mo.py
+
+# ==============================================================================
+# IDE & SYSTEM ARTIFACTS
+# ==============================================================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
