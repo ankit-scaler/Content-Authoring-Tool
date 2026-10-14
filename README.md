@@ -71,29 +71,3 @@ cd backend
 python -m uvicorn main:app --reload --port 8000
 ```
 Open your browser at `http://localhost:8000` to access the full UI and backend APIs.
-
----
-
-## Deployment to Railway
-
-This project is pre-configured with:
-- `railway.toml`: Automatic build & startup instructions.
-- `Procfile`: Uvicorn runner mapping dynamically to `${PORT}`.
-- `Dockerfile`: Production multi-stage container.
-
-### Step-by-Step Railway Deployment:
-1. Push your code to a GitHub repository.
-2. Log into [Railway.app](https://railway.app/).
-3. Click **"New Project"** -> **"Deploy from GitHub repo"** and select your repository.
-4. Go to the project **Variables** tab on Railway and add:
-   - `ANTHROPIC_API_KEY`: Your Claude API key.
-   - `EXECUTION_MODE`: `live`
-   - `PORT`: `8000` (Railway injects this automatically, but good practice).
-   - *(Optional)* `GROQ_API_KEY` if testing with Groq.
-5. In the **Settings** tab -> **Networking**, click **"Generate Domain"** to get a public URL (e.g., `https://script-generator-production.up.railway.app`).
-6. Open your public domain. The frontend UI and backend API will be live automatically.
-
----
-
-## Security & Secrets
-- Never commit `backend/.env` to GitHub. The included `.gitignore` protects secrets, runtime database write-ahead logs (`*.db-wal`), and virtual environments.
