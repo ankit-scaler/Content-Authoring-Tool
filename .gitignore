@@ -67,6 +67,22 @@ brochure_missing_and_changes.txt
 curriculum_brochure_vs_live_audit.txt
 backend/check_mo.py
 
+# Local architectural design docs & reference transcripts
+Beginner_Lecture_Script_Programming_Foundations.txt
+Beginner_Scaffolding_And_Code_Pacing_Engine.md
+Complete_Master_Specification_Document.md
+Contextual_Memory_And_Brevity_Engine.md
+Dynamic_Hook_And_Custom_Time_Engine.md
+Golden_Script_Example_Backend_Architecture.md
+Golden_Script_Example_Intro_DBMS.md
+PRD_Analysis.md
+Previous_Tool_Audit_And_Engineering_Fixes.md
+Scaler_Official_Curriculum_And_Course_Catalog.md
+Scaler_Official_Curriculum_And_Course_Catalog.txt
+Simulation_Feedback_Analysis_And_Solutions.md
+System_Architecture_And_Workflow.md
+Time_series_1.ipynb
+
 # ==============================================================================
 # IDE & SYSTEM ARTIFACTS
 # ==============================================================================
