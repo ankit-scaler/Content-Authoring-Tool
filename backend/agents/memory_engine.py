@@ -186,16 +186,18 @@ def save_memory_ledger(
     module_id: int,
     terms: List[str],
     abstractions: List[str],
-    analogy: str,
-    cliffhanger: str
+    analogy: Optional[str],
+    cliffhanger: Optional[str],
+    summary: Optional[Dict[str, Any]] = None
 ):
-    """Saves memory ledger snapshot upon script SME GTG approval."""
+    """Saves the memory record of an approved script: its terms, what it built, its running example, how it ended, and (summary) what it taught in order."""
     existing = db.query(MemoryLedger).filter(MemoryLedger.class_id == class_id).first()
     if existing:
         existing.terms_mastered = json.dumps(terms)
         existing.code_abstractions = json.dumps(abstractions)
         existing.anchor_analogy = analogy
         existing.cliffhanger = cliffhanger
+        existing.summary_json = json.dumps(summary) if summary else None
     else:
         ledger = MemoryLedger(
             module_id=module_id,
@@ -203,7 +205,8 @@ def save_memory_ledger(
             terms_mastered=json.dumps(terms),
             code_abstractions=json.dumps(abstractions),
             anchor_analogy=analogy,
-            cliffhanger=cliffhanger
+            cliffhanger=cliffhanger,
+            summary_json=json.dumps(summary) if summary else None
         )
         db.add(ledger)
     db.commit()

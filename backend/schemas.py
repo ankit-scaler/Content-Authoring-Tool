@@ -34,6 +34,7 @@ class ModuleOut(BaseModel):
     module_type: str
     segment: Optional[str] = None
     class_count: Optional[int] = None
+    class_type_counts: Optional[Dict[str, int]] = None
     duration_label: Optional[str] = None
 
     class Config:
@@ -49,6 +50,9 @@ class ClassOut(BaseModel):
     learning_outcomes: Optional[str] = None
     class_type: str
     module_type: str
+    junction_number: Optional[int] = None
+    content_change_pct: Optional[int] = 0
+    content_change_description: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -60,8 +64,12 @@ class ClassUpdate(BaseModel):
     learning_outcomes: Optional[str] = None
     class_type: Optional[str] = None
     module_type: Optional[str] = None
+    content_change_pct: Optional[int] = Field(None, ge=0, le=100)
+    content_change_description: Optional[str] = None
     sequence_number: Optional[int] = None
     module_id: Optional[int] = None
+    reference_script: Optional[str] = Field(None, max_length=200000)       # a previous script of this class, as text; an empty string removes it
+    reference_script_name: Optional[str] = None
 
 class ClassCreate(BaseModel):
     module_id: int
@@ -72,6 +80,10 @@ class ClassCreate(BaseModel):
     learning_outcomes: Optional[str] = None
     class_type: str = "Live"
     module_type: str = "Core"
+    content_change_pct: int = Field(0, ge=0, le=100)
+    content_change_description: Optional[str] = None
+    reference_script: Optional[str] = Field(None, max_length=200000)
+    reference_script_name: Optional[str] = None
 
 class ProgramCreate(BaseModel):
     name: str
@@ -82,6 +94,7 @@ class ProgramUpdate(BaseModel):
     name: Optional[str] = None
     slug: Optional[str] = None
     description: Optional[str] = None
+    tat_target_days: Optional[int] = Field(None, ge=0, le=3650)      # 0 clears the target
 
 class TrackCreate(BaseModel):
     program_id: int
@@ -100,14 +113,21 @@ class ModuleCreate(BaseModel):
     module_type: str = "Core"
     is_locked: bool = True
     approved_sources: Optional[str] = None
+    owner_name: Optional[str] = None
+    segment: Optional[str] = Field(None, max_length=100)
+    duration_months: Optional[float] = Field(None, gt=0, le=60)
 
 class ModuleUpdate(BaseModel):
     name: Optional[str] = None
     module_type: Optional[str] = None
     is_locked: Optional[bool] = None
     approved_sources: Optional[str] = None
+    owner_name: Optional[str] = None
+    kickoff_date: Optional[str] = None                                # YYYY-MM-DD; an empty text clears it
     track_id: Optional[int] = None
     sequence_order: Optional[int] = None
+    segment: Optional[str] = Field(None, max_length=100)     # Admin only
+    duration_months: Optional[float] = Field(None, gt=0, le=60)   # Admin only
 
 # ==============================================================================
 # SCRIPT CREATION (THE 10 CANONICAL INPUTS)
@@ -126,6 +146,7 @@ class ScriptCreateRequest(BaseModel):
     custom_class_title: Optional[str] = Field(None, description="Optional custom or refined class title by SME")
     custom_agendas: Optional[List[str]] = Field(None, description="Optional customized class agendas provided by SME")
     learning_outcomes: Optional[str] = Field(None, description="Learning outcomes provided by SME if not set by MO")
+    review_lenses: Optional[List[str]] = Field(None, description="The review lenses the SME chose; empty means all four")
 
 # ==============================================================================
 # CARD & OUTLINE SCHEMAS
@@ -138,6 +159,8 @@ class OutlineCardItem(BaseModel):
     pedagogical_phase: str # "Instructor Note", "Agenda", "Everyday Analogy", "Concept", "Failure Mode", "Code Along", "Quiz", "Recap"
     key_concept: str
     visual_type: Optional[str] = "mermaid" # "mermaid", "image", "animation", "none"
+    level: Optional[str] = None            # "beginner", "bridge" or "advanced": planned from the SME's beginner/advanced split
+    has_code: Optional[bool] = None        # planned from the SME's code ratio: does this card carry code?
 
 class OutlineSectionOut(BaseModel):
     section_id: str
@@ -153,7 +176,12 @@ class OutlineResponse(BaseModel):
     sections: Optional[List[Dict[str, Any]]] = None
     running_example: Optional[str] = None
     assumptions: Optional[List[str]] = None
+    visual_cards: Optional[List[Dict[str, Any]]] = None
+    checks: Optional[List[Dict[str, Any]]] = None
+    plan_summary: Optional[Dict[str, Any]] = None      # the SME's beginner/advanced split and code ratio, as planned
+    continuity: Optional[Dict[str, Any]] = None        # the class before this one (and whether its script is approved) and the upcoming classes not to teach
     overlap_analysis: Optional[str] = "No overlap detected with previous/subsequent classes in module."
+    overlap_flags: Optional[List[Dict[str, Any]]] = None   # cards that plan something an earlier or a later class of the module teaches (FR-10)
 
 class OutlineApprovalRequest(BaseModel):
     action: str = Field(..., description="'GTG' to lock outline, 'Edit' to submit modifications, 'ReThink' to regenerate")
@@ -188,7 +216,20 @@ class ScriptCardOut(BaseModel):
     visual_type: Optional[str] = None
     visual_content: Optional[str] = None # Mermaid syntax, Image URL or HTML animation
     visual_caption: Optional[str] = None
+    visual_id: Optional[str] = None
+    visual_srcdoc: Optional[str] = None   # animations: a complete, sandbox-ready page (agents/safe_html.py)
+    visual_approved: bool = False
+    visual_stale: bool = False            # the prompt changed after this visual was made
+    code_run: Optional[Dict[str, Any]] = None   # what happened when the code was run
+    visual_source: Optional[str] = None   # gemini | claude | placeholder
+    visual_note: Optional[str] = None     # why a placeholder was used
+    sources: Optional[List[Dict[str, Any]]] = None
     is_approved: bool = False
+    starts_at_sec: Optional[float] = None      # where this card starts on the class clock, counted from the first word of the class
+    ends_at_sec: Optional[float] = None
+    spoken_words: Optional[int] = None         # the words the instructor actually says (code, cues and markers excluded)
+    word_budget: Optional[int] = None          # the words this card's minutes can hold
+    words_max: Optional[int] = None            # the most it may hold (15% over)
 
     class Config:
         from_attributes = True
@@ -204,6 +245,8 @@ class ReviewFinding(BaseModel):
     passed: bool
     summary: str
     detailed_findings: List[str]
+    ran: Optional[bool] = True
+    findings: Optional[List[Dict[str, Any]]] = None
 
 class MultiAgentReviewResponse(BaseModel):
     script_id: int
@@ -216,6 +259,15 @@ class MultiAgentReviewResponse(BaseModel):
 # ==============================================================================
 # SCRIPT METADATA & STATUS
 # ==============================================================================
+
+class SourceReviewRequest(BaseModel):
+    url: str
+    decision: str          # accept | remove
+
+
+class RequestChangesBody(BaseModel):
+    reason: str
+
 
 class ScriptDetailResponse(BaseModel):
     id: int
@@ -230,6 +282,17 @@ class ScriptDetailResponse(BaseModel):
     cards_count: int
     created_at: datetime.datetime
     cards: List[ScriptCardOut] = []
+    agenda: List[Dict[str, Any]] = []            # what the class covers, each item with its minutes (shown above the cards)
+    setup: Optional[Dict[str, Any]] = None       # the before-the-class setup checklist, when the class has code
+    revision_note: Optional[str] = None          # the Module Owner's reason for not approving, until the author resubmits
+    revision_by: Optional[str] = None
+    revision_at: Optional[datetime.datetime] = None
+    author_name: Optional[str] = None
+    review_passed: Optional[bool] = None
+    review_score: Optional[float] = None
+    review_at: Optional[datetime.datetime] = None
+    approved_by_name: Optional[str] = None
+    approved_at: Optional[datetime.datetime] = None
 
     class Config:
         from_attributes = True
@@ -247,6 +310,23 @@ class CardUpdateRequest(BaseModel):
     code_snippet: Optional[str] = None
     code_language: Optional[str] = None
     is_approved: Optional[bool] = None
+
+
+class QuizEditRequest(BaseModel):
+    question: str
+    options: List[str]
+    correct_option_index: int
+    explanation: str = ""
+    reasons: List[str] = []          # reasons[i] says why option i is wrong (ignored for the right one)
+
+
+class QuizRegenerateRequest(BaseModel):
+    instruction: Optional[str] = None      # for example "test the difference between a database and a DBMS, with code"
+
+
+class CodeTryRequest(BaseModel):
+    code: Optional[str] = None           # the code as it is in the editor, not saved yet; None runs the card's saved code
+    language: Optional[str] = None
 
 
 class ChatAssistRequest(BaseModel):
@@ -271,6 +351,8 @@ class UserOut(BaseModel):
     role: str
     program_ids: List[int] = []
     program_names: List[str] = []
+    track_ids: List[int] = []
+    track_names: List[str] = []
 
     class Config:
         from_attributes = True
@@ -280,12 +362,17 @@ class UserCreate(BaseModel):
     email: str
     role: str  # "sme", "mo", "pm", "admin"
     program_ids: List[int] = []
+    track_ids: List[int] = []
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
     email: Optional[str] = None
     role: Optional[str] = None
     program_ids: Optional[List[int]] = None
+    track_ids: Optional[List[int]] = None
+
+class LoginRequest(BaseModel):
+    email: str
 
 class ActivityLogCreate(BaseModel):
     user_name: str
@@ -293,6 +380,14 @@ class ActivityLogCreate(BaseModel):
     action_type: str
     description: str
     details: Optional[str] = None
+
+class ActivityBatchItem(BaseModel):
+    action_type: str
+    description: str
+
+class ActivityBatch(BaseModel):
+    actor_id: int
+    items: List[ActivityBatchItem]
 
 class UserActivityOut(BaseModel):
     id: int

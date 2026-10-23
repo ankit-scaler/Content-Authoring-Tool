@@ -89,3 +89,18 @@ Time_series_1.ipynb
 .idea/
 .DS_Store
 Thumbs.db
+
+# pictures made by the image model
+backend/generated/
+
+# fetched documentation pages (a cache)
+backend/cache/
+
+# ==============================================================================
+# TESTS & TEST SUITES
+# ==============================================================================
+tests/
+test/
+backend/tests/
+*test*.py
+

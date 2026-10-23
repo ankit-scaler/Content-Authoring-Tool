@@ -28,7 +28,7 @@ SyncSessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False
 )
-
+SessionLocal = SyncSessionLocal
 Base = declarative_base()
 
 def get_db():

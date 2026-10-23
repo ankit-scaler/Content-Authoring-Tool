@@ -55,9 +55,15 @@ Copy `.env.example` to `backend/.env` and insert your API keys:
 cp .env.example backend/.env
 ```
 Key variables:
-- `ANTHROPIC_API_KEY`: Required if using Claude.
-- `GROQ_API_KEY`: Required if using Groq.
+- `ANTHROPIC_API_KEY`: Claude Sonnet 5.5 (`ANTHROPIC_MODEL`, default `claude-sonnet-5-5`). Writes the outline, every card of the script, the reviews, the repairs, the chat assistant and the HTML animations.
+- `GEMINI_API_KEY`: Gemini Flash. Makes the Mermaid flow diagrams (`GEMINI_TEXT_MODEL`) and the pictures (`GEMINI_IMAGE_MODEL`).
 - `EXECUTION_MODE`: `live` (calls real LLM APIs) or `mock` (deterministic test outputs).
+
+An Administrator can check that both keys work with `GET /api/system/ai-status` and `POST /api/system/ai-test?image=true`.
+
+How a script is generated: the outline is made first, with a visual card (its own prompt) placed after the card it supports. The
+script is then written card by card. Claude writes each card's text and any animation; Gemini makes the Mermaid flows and
+images; the full script is complete when the last card is written, and then goes to review.
 
 ### 5. Seed the Curriculum Database (If needed)
 ```bash

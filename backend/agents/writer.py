@@ -13,8 +13,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+from agents.llm import call_llm_chat, call_llm_json, llm_configured
+
 EXECUTION_MODE = os.getenv("EXECUTION_MODE", "hybrid")
 
 
@@ -24,6 +24,99 @@ WRITER_SYSTEM = """\
 You are the Writer for Scaler's script authoring tool.
 {block_a}
 {block_b}
+"""
+
+WRITER_CARD_TASK = """\
+INPUTS
+Class outline, titles only (for orientation): {outline_overview}
+Section goal: {section_goal}
+Running example: {running_example}
+CARD TO WRITE NOW, follow this spec: {card_spec}
+Cards already written, newest last (continuity only; do not repeat them): {written_so_far}
+Terms already defined in this script: {term_register}
+{continuity}
+{reference_excerpts}
+
+TASK
+Write exactly one card: the card above, in the card_format, obeying every rule in the good script rules that applies to
+its card_type.
+- SCOPE: teach only what this card's agenda_items and outcomes ask for, in the depth the spec gives. Use the SME's
+  additional resources and reference material in the context for facts and examples. Add nothing outside the agenda
+  and outcomes, and nothing from the upcoming classes.
+- WELCOME CARD: when the card_type is welcome, the card is the spoken welcome and the introduction placeholder, nothing else: no agenda and no teaching.
+- AGENDA CARD: when the spec has "agenda_timing", this is the agenda card and it holds ONLY the agenda. One sentence that introduces it, then the class agenda read
+  aloud as a short numbered list: every item in agenda_timing, in that order, each with its minutes in brackets after the item, for example "Why SQL now (14 minutes)", never written as "about N minutes". Use exactly those items and minutes, add none
+  and drop none, then one sentence that moves on to the first topic. No welcome, no introduction, no learning outcomes and no teaching.
+- LEVEL: the spec's "level" says how deep this card goes. beginner: plain words, define every term, one small step at a time, a simple everyday example before any
+  definition, no internals. bridge: this is where the class steps up: say so in one sentence, recap the simple version, then add the first deeper idea. advanced:
+  the learners have the basics, so go deeper: edge cases, how it works inside, trade-offs, failure modes, numbers. Put the deeper material under a "### Going deeper"
+  sub-heading, so a beginner can skim it. A card with no level is housekeeping (agenda, FAQ, recap).
+- CODE: the spec's "has_code" is the plan. true: the card MUST include runnable code (code_snippet), and the spoken text walks through it. false: return code_snippet as null and
+  teach with words and diagrams. The code ratio the SME asked for depends on this.
+- CONTINUITY: this card is read straight after the one before it, in one live class. OPEN by picking up exactly where the previous card
+  ended (its closing words are given above): one or two spoken sentences that name what was just covered and say what this card does
+  next, for example "Alright, so we have seen X. Now let's look at Y." Never greet again, never say "in this card" or "in this section", never
+  restate the previous card, and never introduce its example again. CLOSE with one short spoken sentence that leads into the next card
+  (given above), for example "Let's see that in action." If the next card is a quiz, lead into it with the topic still unexplained ("Before we explain this, a quick question"). The
+  last card of the class closes the class instead. The opening and the closing count in the word budget.
+- VOICE: the body is the exact words the instructor will say aloud. Write "I" and "we" speaking to "you". Never write a direction to
+  the instructor ("Greet everyone", "Ask the learners to...", "Pause and watch the chat") and never speak of "the learners". The only
+  text that is not spoken is a short bracketed cue of at most 8 words, such as [pause for replies].
+- FORMAT: light markdown only: "### " sub-headings, "- " bullets, "1. " numbered lists, bold terms, and "> **Key:** ..." callouts. No "---" divider
+  lines, no tables, and no em dashes. Short paragraphs of 2 to 4 sentences.
+- LINKS: give a link only when you need one, write it as [what it is](https://full-address) (the page shows the source beside it), use only
+  addresses from the approved sources and the opening kit, and add the same address to "sources" with its source name. Never invent an address.
+- Use the running example with identical names. Introduce no new running example.
+- Never write generator or production wording in the spoken text: no "option index", "zero-based", "quiz JSON", "Visual V01", "UNVERIFIED" or notes about how the script was made. The instructor reads only what is meant to be said.
+- Keep every term one thing all the way through: if a card calls SQL a language, no other card calls it a tool. Define a term once, in the card that introduces it, and do not repeat the definition in later cards.
+- Never write a year or "current release" next to a version unless a source in this card says so; say "a recent version" instead.
+- A spoken question and the quiz on screen under it must be the same question.
+- A Predict callout puts the question on its own line and each option (A, B, C) on its own line below it, never run together in one line.
+- Every time given for an agenda item must add up to the class length, and a card never says "Hour 2" or similar unless the clock is there.
+- Use only terms listed as defined, terms from past classes, or terms you define in this card before using them.
+- QUIZ FIRST: a quiz card comes BEFORE its topic is explained. Ask it so a learner can reason to an answer from everyday sense or from what earlier cards taught,
+  use no term the class has not defined yet, and write the explanation as the answer the next card will teach. The card AFTER a quiz opens by giving the answer
+  (name the right option and why) and then explains the topic.
+- quiz card: return quiz_json that is easy to read aloud and on screen. question: one or two short sentences (any code goes in a fenced block);
+  options: exactly 4, each one short line of at most 12 words, written WITHOUT a letter in front (the page adds A to D); correct_option_index;
+  explanation: one or two sentences on why the right option is right; distractor_explanations: one short sentence (at most 20 words) for EACH
+  wrong option, keyed by its letter A to D, saying why a learner might pick it and why it is wrong. Make the wrong options tempting, not silly.
+- walkthrough or code card: runnable code, the platform and version, what success looks like, and the likely failure.
+  The code is RUN by the system and must work as written: no input(), no network, no files, no installs. For SQL, the snippet
+  must create and fill its own small tables first (CREATE TABLE, then INSERT with 4 to 8 rows), then run the query on them, in plain SQL
+  that SQLite also accepts, so it can be run and its real output shown. Never query a table that the snippet does not create, and never
+  use a project or dataset prefix (like dataset.table). If the class teaches a specific database, name it in the platform comment. If a snippet is
+  meant to fail so learners can see an error, set "code_expected_error" to the error's name (for example "NameError");
+  otherwise leave it null.
+- VISUALS: the spec's "visuals" lists the visual cards planned for this card. Put one placeholder
+  [[VISUAL: <visual_id>]] in the body at the point it helps, for each of them, using the exact visual_id. Invent no
+  other visual. If "visuals" is empty, use no placeholder. Never put a table, raw HTML or an image in the body.
+- SOURCES: for every API, command, flag, version or statistic you state, add an entry to "sources" with the claim,
+  the source name (for example "PostgreSQL 16 documentation: EXPLAIN"), search_terms that find it, and "url": the
+  official documentation page you believe states it (leave it out if you are unsure). Every source is fetched from the
+  internet and checked against your claim, so a wrong URL is simply dropped, but a claim the page does not support is
+  marked unverified. State only what the REFERENCE EXCERPTS and the approved sources support.
+- LENGTH: the card runs {duration_sec} seconds, so write about {target_words} spoken words and never more than {max_words}. Code, quiz and callout text
+  count. Cover EVERY agenda item and outcome in the spec inside that space: one clear idea, one example, one check each. Spend words on the
+  idea, not on repeats, recaps inside the card, extra examples or restating a point. A card that runs over its time is a failure; so is a
+  card that skips one of its topics.
+- Cite approved documentation for every API or command you teach. Label anything else 'UNVERIFIED: needs SME validation'.
+
+OUTPUT (JSON only, no text outside it)
+{{
+  "cards": [{{
+    "card_id": string, "card_type": string, "title": string, "description": string, "duration_sec": number,
+    "body_markdown": string, "instructor_note": string, "code_snippet": string or null, "code_language": string or null,
+    "code_expected_error": string or null,
+    "sources": [{{"claim": string, "source": string, "search_terms": string, "url": string}}],
+    "quiz_json": {{"question": string, "options": [string], "correct_option_index": int, "explanation": string,
+                   "distractor_explanations": {{"A": string}}}} or null
+  }}],
+  "references": [{{"url": string, "title": string, "retrieved": "YYYY-MM-DD", "approved": boolean}}],
+  "new_terms": [{{"term": string}}],
+  "visual_requests": [{{"id": string, "type": "mermaid | animation | image", "intent": string, "nodes": [string], "card_id": string}}],
+  "self_check": {{"rules_at_risk": [{{"rule": string, "reason": string}}]}}
+}}
 """
 
 WRITER_SECTION_TASK = """\
@@ -37,6 +130,10 @@ TASK
 Write every card in {section_id}, following the outline and card_format exactly.
 
 CRITICAL PEDAGOGICAL REQUIREMENTS:
+- CONTINUITY: the cards are read one after another in a live class. Each card opens by picking up where the previous one ended ("Alright, we have just seen X. Now let's...")
+  and closes with one short sentence leading into the next. Never greet again after the first card.
+- LENGTH: each card holds about 90 spoken words per minute of its duration (a 5 minute card, about 450 words; never more than 15% over). Cover every
+  agenda item and outcome the card serves inside that space; cut repeats, recaps and extra examples. Running over time is a failure.
 - DO NOT just provide dry theory! Every concept card must weave together explanations, visual models, code/steps, and interactive checkpoint moments.
 - VISUAL ASSETS (MANDATORY): For every major concept, state transition, or system architecture card, populate "visual_requests" with at least one visual request (type: "mermaid" for architecture/flowcharts, "animation" for dynamic step-by-step state changes, or "image" for high-impact conceptual diagrams).
 - CHECKPOINT QUIZZES: At least 2 cards in each topic deck (or cards flagged as quiz/checkpoint) MUST have a fully structured "quiz_json" with:
@@ -68,7 +165,7 @@ Return ONLY valid JSON with this structure:
   "cards": [
     {{
       "card_id": string,
-      "card_type": "instructor_note | agenda | concept | problem | walkthrough | quiz | faq | recap",
+      "card_type": "instructor_note | welcome | agenda | concept | problem | walkthrough | quiz | faq | recap",
       "title": string,
       "description": string,
       "duration_sec": number,
@@ -106,6 +203,133 @@ SELECTED TEXT:
 """
 
 
+def _normalise_section_id(value: Any) -> str:
+    digits = "".join(ch for ch in str(value or "") if ch.isdigit())
+    return digits.lstrip("0") or str(value or "")
+
+
+def _outline_for_section(outline: Dict[str, Any], section_id: str) -> Dict[str, Any]:
+    """The part of the outline the Writer needs for one section: that section in full, the others as a title list.
+    Section ids differ between callers (S1, S01, sec_1, section-1), so compare their numbers."""
+    sections = outline.get("sections", []) if isinstance(outline, dict) else []
+    wanted = _normalise_section_id(section_id)
+    chosen = next((s for s in sections if _normalise_section_id(s.get("section_id")) == wanted), None)
+    return {
+        "running_example": outline.get("running_example"),
+        "assumptions": outline.get("assumptions"),
+        "this_section": chosen,
+        "other_sections": [{"section_id": s.get("section_id"), "goal": s.get("goal"),
+                            "cards": [c.get("title") for c in s.get("cards", [])]} for s in sections if s is not chosen],
+    }
+
+
+def live_llm_available() -> bool:
+    return bool(llm_configured() and EXECUTION_MODE != "mock")
+
+
+def continuity_text(flow: Optional[Dict[str, Any]]) -> str:
+    """The prompt lines that tell the Writer where it is in the class: where the previous card stopped and what card comes next."""
+    flow = flow or {}
+    prev, nxt = flow.get("previous"), flow.get("next")
+    lines = [f"WHERE YOU ARE: card {flow.get('position') or '?'} of the class."]
+    if flow.get("level") and flow.get("previous_level") and flow["level"] != flow["previous_level"]:
+        lines.append(f"LEVEL STEP: the card before was {flow['previous_level']} level and this one is {flow['level']}. Signpost the step in your opening, "
+                     f"for example \"Now that the basics are clear, let's go a level deeper.\"")
+    if prev and prev.get("ended_with"):
+        lines.append(f'PREVIOUS CARD ({prev.get("type") or "card"}, "{prev.get("title")}") ENDED WITH THESE WORDS: "{prev.get("ended_with")}"')
+    elif prev:
+        lines.append(f'PREVIOUS CARD ({prev.get("type") or "card"}, "{prev.get("title")}") is not written yet. Open by linking to that topic, as if it had just been covered, without repeating it.')
+    else:
+        lines.append("There is no previous card: this one opens the class, so open it as an opening.")
+    if nxt:
+        lines.append(f'NEXT CARD: {nxt.get("type") or "card"}, "{nxt.get("title")}"' + (f' (it covers: {nxt.get("covers")})' if nxt.get("covers") else ""))
+    else:
+        lines.append("There is no next card: this one closes the class.")
+    return "\n".join(lines)
+
+
+def build_card_prompts(
+    card_spec: Dict[str, Any],
+    section_goal: str,
+    outline_overview: List[str],
+    written_so_far: List[Dict[str, Any]],
+    term_register: List[str],
+    running_example: Optional[str],
+    block_a_context: str,
+    reference_excerpts: str = "",
+    flow: Optional[Dict[str, Any]] = None,
+) -> tuple:
+    """The (system, task) prompts for writing one card."""
+    from agents.shared_context import BLOCK_B_GOOD_SCRIPT_RULES, word_budget
+    system_prompt = WRITER_SYSTEM.format(block_a=block_a_context, block_b=BLOCK_B_GOOD_SCRIPT_RULES)
+    task_prompt = WRITER_CARD_TASK.format(
+        outline_overview=json.dumps(outline_overview, separators=(",", ":")),
+        section_goal=section_goal or "",
+        running_example=running_example or "none set; choose one everyday system and keep it",
+        card_spec=json.dumps(card_spec, separators=(",", ":")),
+        written_so_far=json.dumps(written_so_far, separators=(",", ":")) if written_so_far else "none (this is the first card)",
+        term_register=json.dumps(term_register, separators=(",", ":")) if term_register else "[]",
+        continuity=continuity_text(flow),
+        duration_sec=int(card_spec.get("duration_sec") or 300),
+        target_words=word_budget((card_spec.get("duration_sec") or 300) / 60.0)[0], max_words=word_budget((card_spec.get("duration_sec") or 300) / 60.0)[1],
+        reference_excerpts=(f"REFERENCE EXCERPTS (from the approved documentation, fetched just now; your facts must agree with them):\n{reference_excerpts}"
+                            if reference_excerpts else ""),
+    )
+    return system_prompt, task_prompt
+
+
+def write_card(
+    card_spec: Dict[str, Any],
+    section_goal: str,
+    outline_overview: List[str],
+    written_so_far: List[Dict[str, Any]],
+    term_register: List[str],
+    running_example: Optional[str],
+    block_a_context: str,
+    reference_excerpts: str = "",
+    flow: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Writes exactly one card. The prompt holds only that card's spec, a digest of what was already written and the
+    terms already defined, so it fits the model's budget and the card continues the script instead of restarting it."""
+    system_prompt, task_prompt = build_card_prompts(
+        card_spec, section_goal, outline_overview, written_so_far, term_register, running_example, block_a_context, reference_excerpts, flow)
+    from agents.image_gen import without_image_option
+    return call_llm_json(system=without_image_option(system_prompt), messages=[{"role": "user", "content": without_image_option(task_prompt)}],
+                         max_tokens=2500, temperature=0.2, agent="writer_card")
+
+
+CODE_REPAIR_TASK = """\
+The code below was run by the system and did not work. Fix it with the smallest change that makes it work.
+Keep the same names, the same teaching idea and the output the card describes. The code must not use input(), the
+network, files or installs. {expectation}
+
+LANGUAGE: {language}
+CODE:
+{code}
+
+WHAT WENT WRONG:
+{error}
+
+THE CARD IT BELONGS TO (for context only):
+{card_text}
+
+Return ONLY JSON: {{"code": string}}
+"""
+
+
+def repair_code(language: Optional[str], code: str, error: str, card_text: str, expected_error: Optional[str] = None) -> Optional[str]:
+    """One attempt to fix code that failed to run. Returns the new code, or None when the model gave nothing usable."""
+    expectation = (f"This snippet is MEANT to fail with {expected_error}; make it fail with exactly that error."
+                   if expected_error else "It must run without an error.")
+    out = call_llm_json(
+        messages=[{"role": "user", "content": CODE_REPAIR_TASK.format(
+            expectation=expectation, language=language or "unknown", code=code[:6000], error=(error or "")[-1500:],
+            card_text=(card_text or "")[:1500])}],
+        max_tokens=2500, temperature=0.1, agent="code_repair")
+    fixed = out.get("code") if isinstance(out, dict) else None
+    return fixed.strip("\n") if isinstance(fixed, str) and fixed.strip() else None
+
+
 def write_section(
     section_id: str,
     approved_outline: Dict[str, Any],
@@ -115,14 +339,17 @@ def write_section(
     class_title: str = "",
     memory_context: Optional[Dict[str, Any]] = None,
     content_mix_beginner: int = 65,
-    code_ratio: int = 50
+    code_ratio: int = 50,
+    script_id: Optional[int] = None
 ) -> Dict[str, Any]:
     """
     Writes all cards for a given section_id from the approved outline.
     Returns cards + references + new_terms + visual_requests + self_check.
     """
-    has_llm_key = bool(GROQ_API_KEY or ANTHROPIC_API_KEY)
-    if not has_llm_key or EXECUTION_MODE == "mock":
+    if not llm_configured() or EXECUTION_MODE == "mock":
+        from agents.llm import LLMUnavailable, mock_fallback_allowed
+        if not mock_fallback_allowed():                       # no key: say so, rather than write sample text that has nothing to do with this class
+            raise LLMUnavailable("The AI is not configured, so the cards cannot be written. Add the AI key in backend/.env and restart. Sample text is never written in its place.")
         return _mock_section_output(section_id, approved_outline, class_title)
 
     try:
@@ -159,48 +386,26 @@ def write_section(
                 })
 
         task_prompt = WRITER_SECTION_TASK.format(
-            approved_outline=json.dumps(approved_outline, indent=2),
+            approved_outline=json.dumps(_outline_for_section(approved_outline, section_id), separators=(",", ":")),
             section_id=section_id,
             approved_sections=json.dumps(approved_summary, indent=2) if approved_summary else "None (first section)",
             term_register=json.dumps(term_register) if term_register else "[]"
         )
 
-        if GROQ_API_KEY:
-            from agents.groq_client import call_groq_chat
-            content_text = call_groq_chat(
-                system=system_prompt,
-                messages=[{"role": "user", "content": task_prompt}],
-                max_tokens=8000,
-                temperature=0.2
-            )
-        else:
-            import anthropic
-            client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-            response = client.messages.create(
-                model="claude-sonnet-4-20250514",
-                max_tokens=8000,
-                temperature=0.2,
-                system=system_prompt,
-                messages=[{"role": "user", "content": task_prompt}]
-            )
-            content_text = response.content[0].text.strip()
-
-        raw_str = content_text.strip()
-        if "```json" in raw_str:
-            raw_str = raw_str.split("```json", 1)[1].split("```", 1)[0].strip()
-        elif "```" in raw_str:
-            raw_str = raw_str.split("```", 1)[1].split("```", 1)[0].strip()
-
-        # If model added conversational prefix before {
-        if "{" in raw_str and "}" in raw_str:
-            start_idx = raw_str.find("{")
-            end_idx = raw_str.rfind("}") + 1
-            raw_str = raw_str[start_idx:end_idx]
-
-        result = json.loads(raw_str)
+        result = call_llm_json(
+            system=system_prompt,
+            messages=[{"role": "user", "content": task_prompt}],
+            max_tokens=4000,
+            temperature=0.2,
+            agent="writer_section",
+            script_id=script_id
+        )
         return result
 
     except Exception as e:
+        from agents.llm import mock_fallback_allowed
+        if not mock_fallback_allowed():
+            raise      # a failed model call must be seen, not hidden behind sample content
         print(f"Warning: Writer agent failed ({e}). Falling back to mock.")
         return _mock_section_output(section_id, approved_outline, class_title)
 
@@ -214,8 +419,7 @@ def inline_assist(
     Rewrites a selected text snippet per the SME's inline request.
     Returns only the replacement text.
     """
-    has_llm_key = bool(GROQ_API_KEY or ANTHROPIC_API_KEY)
-    if not has_llm_key or EXECUTION_MODE == "mock":
+    if not llm_configured() or EXECUTION_MODE == "mock":
         return selected_text  # No-op in mock mode
 
     try:
@@ -231,25 +435,13 @@ def inline_assist(
             selected_text=selected_text
         )
 
-        if GROQ_API_KEY:
-            from agents.groq_client import call_groq_chat
-            return call_groq_chat(
-                system=system_prompt,
-                messages=[{"role": "user", "content": task_prompt}],
-                max_tokens=2000,
-                temperature=0.2
-            )
-        else:
-            import anthropic
-            client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-            response = client.messages.create(
-                model="claude-sonnet-4-20250514",
-                max_tokens=2000,
-                temperature=0.2,
-                system=system_prompt,
-                messages=[{"role": "user", "content": task_prompt}]
-            )
-            return response.content[0].text.strip()
+        return call_llm_chat(
+            system=system_prompt,
+            messages=[{"role": "user", "content": task_prompt}],
+            max_tokens=1500,
+            temperature=0.2,
+            agent="writer_inline"
+        )
 
     except Exception as e:
         print(f"Warning: Inline assist failed ({e}).")
